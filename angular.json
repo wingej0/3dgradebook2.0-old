@@ -117,8 +117,16 @@
               "devServerTarget": "sbgradebook:serve:production"
             }
           }
+        },
+        "deploy": {
+          "builder": "@angular/fire:deploy",
+          "options": {}
         }
       }
-    }},
-  "defaultProject": "sbgradebook"
+    }
+  },
+  "defaultProject": "sbgradebook",
+  "cli": {
+    "analytics": false
+  }
 }
