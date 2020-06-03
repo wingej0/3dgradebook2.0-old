@@ -1,6 +1,8 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HomeModule } from './home/home.module';
+import { DashboardModule } from './dashboard/dashboard.module';
+import { PageLayoutModule } from './page-layout/page-layout.module';
 
 
 
@@ -8,7 +10,9 @@ import { HomeModule } from './home/home.module';
   declarations: [],
   imports: [
     CommonModule,
-    HomeModule
+    PageLayoutModule,
+    HomeModule,
+    DashboardModule
   ]
 })
 export class ModulesModule { }

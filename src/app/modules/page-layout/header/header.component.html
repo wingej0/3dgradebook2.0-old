@@ -1,0 +1,36 @@
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a href="/" class="navbar-brand">
+        <img src="/assets/img/small-logo.png" width="30" height="30" class="d-inline-block align-top" alt="logo">
+        3D Gradebook
+    </a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNavDropdown">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item">
+                <a class="nav-link" href="/dashboard">Dashboard</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/courses">Courses</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/students">Students</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/standards">Standards</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/courses">Courses</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/gradebook">Gradebook</a>
+            </li>
+        </ul>
+        <span *ngIf="auth.user$ | async as user" class="navbar-text">
+            {{ user.displayName }} &nbsp;
+            <img src="{{ user.photoURL }}" class="rounded-circle z-depth-0" height="35" alt="User">
+        </span>
+    </div>
+</nav>
