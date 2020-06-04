@@ -3,6 +3,7 @@ import { NgModule } from '@angular/core';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
+import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 
 // Firebase declarations
 import { AngularFireModule } from '@angular/fire';
@@ -27,7 +28,9 @@ import { SharedModule } from './shared/shared.module';
     AngularFireDatabaseModule,
     CoreModule,
     ModulesModule,
-    SharedModule
+    SharedModule,
+    FormsModule,
+    ReactiveFormsModule
   ],
   providers: [],
   bootstrap: [AppComponent]

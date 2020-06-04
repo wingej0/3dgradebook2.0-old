@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { HomeModule } from './home/home.module';
 import { DashboardModule } from './dashboard/dashboard.module';
 import { PageLayoutModule } from './page-layout/page-layout.module';
+import { CoursesModule } from './courses/courses.module';
 
 
 
@@ -12,7 +13,8 @@ import { PageLayoutModule } from './page-layout/page-layout.module';
     CommonModule,
     PageLayoutModule,
     HomeModule,
-    DashboardModule
+    DashboardModule,
+    CoursesModule
   ]
 })
 export class ModulesModule { }

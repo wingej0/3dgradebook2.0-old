@@ -2,8 +2,24 @@ body {
     font-family: 'Lato', sans-serif;
   }
   
-h1, h2, h3, h4, h5, h6, .navbar-brand {
+h1, h2, h3, h4, h5, h6, th, .navbar-brand {
     font-family: 'Playfair Display', serif;
     color: #056C13 !important;
     font-style: italic;
+}
+
+/* Creates a top margin to slide underneath nav bar and adds conatainer width */
+main {
+	margin: 20px auto;
+	width: 95%;
+}
+
+/* Vertical alingment */
+.vertical-align {
+  display: flex;
+  align-items: center;
+}
+
+.add-button {
+  margin-top: .5em;
 }
