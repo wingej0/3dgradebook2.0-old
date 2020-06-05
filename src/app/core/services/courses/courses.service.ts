@@ -17,11 +17,11 @@ export class CoursesService {
   ) { }
 
   // Get list of courses
-  getCourses() : Observable<Course[]> {
+  getCourses(sortBy) : Observable<Course[]> {
     return this.auth.user$
       .pipe(concatMap(user => {
         return this.db.list(`${user.uid}/courses`,
-          ref => ref.orderByChild('section'))
+          ref => ref.orderByChild(sortBy))
           .snapshotChanges()
           .pipe(map(snaps => convertSnaps<Course>(snaps))
           );

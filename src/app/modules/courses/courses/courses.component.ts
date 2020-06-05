@@ -11,9 +11,10 @@ import { Course } from 'src/app/core/models/course';
 export class CoursesComponent implements OnInit {
   formTitle : string;
   courseForm;
-  courses;
+  courses : Course[];
   standards;
-  showActive: boolean = true;
+  showActive : boolean = true;
+  sortBy : string = "section";
 
   constructor(
     private coursesService : CoursesService,
@@ -33,7 +34,7 @@ export class CoursesComponent implements OnInit {
         id : [course.id],
         name : [course.name, Validators.required],
         section : [course.section, Validators.required],
-        standards : [course.standards],
+        standardsID : [course.standardsID],
         active : [course.active]
       });
     } else {
@@ -41,14 +42,14 @@ export class CoursesComponent implements OnInit {
       this.courseForm = this.fb.group({
         name : ['', Validators.required],
         section : ['', Validators.required],
-        standards : [''],
+        standardsID : [''],
         active : [true],
     });
     }
   }
 
   getCourses() {
-    this.coursesService.getCourses()
+    this.coursesService.getCourses(this.sortBy)
     .subscribe(courses => {
       if (this.showActive) {
         this.courses = courses.filter(course => course.active);
@@ -62,12 +63,20 @@ export class CoursesComponent implements OnInit {
     if (this.courseForm.value.id) {
       let id = this.courseForm.value.id;
       let updatedCourse = this.courseForm.value;
+      // Add standardsName to object before saving
+      let newStandardsID = this.courseForm.value.standardsID;
+      let newStandardsName = this.standards.find(standards => standards.id == newStandardsID).name;
+      updatedCourse.standardsName = newStandardsName;
       // Delete the id field from the object before saving
       delete updatedCourse.id;
       this.coursesService.updateCourse(updatedCourse, id)
         .subscribe(() => this.setForm());
     } else {
       let newCourse = this.courseForm.value;
+      // Add standardsName to object before saving
+      let newStandardsID = this.courseForm.value.standardsID;
+      let newStandardsName = this.standards.find(standards => standards.id == newStandardsID).name;
+      newCourse.standardsName = newStandardsName;
       this.coursesService.createCourse(newCourse)
         .subscribe(() => this.setForm());
     }
@@ -97,5 +106,10 @@ export class CoursesComponent implements OnInit {
       { id: '3', name: 'order 3' },
       { id: '4', name: 'order 4' }
     ];
+  }
+
+  setSortBy(sortHeader : string) {
+    this.sortBy = sortHeader;
+    this.getCourses();
   }
 }

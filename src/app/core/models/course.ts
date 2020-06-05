@@ -3,5 +3,6 @@ export interface Course {
     name: string,
     section: string,
     active: boolean,
-    standards?: string,
+    standardsID?: string,
+    standardsName: string
 }
