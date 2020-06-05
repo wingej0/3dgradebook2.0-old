@@ -12,6 +12,8 @@ export class CoursesComponent implements OnInit {
   formTitle : string;
   courseForm;
   courses;
+  standards;
+  showActive: boolean = true;
 
   constructor(
     private coursesService : CoursesService,
@@ -21,29 +23,79 @@ export class CoursesComponent implements OnInit {
   ngOnInit(): void {
     this.getCourses();
     this.setForm();
+    this.standards = this.getStandards();
   }
 
-  setForm(course? : string) {
-    this.formTitle = 'Add a Course';
-    this.courseForm = this.fb.group({
-      name : ['', Validators.required],
-      section : ['', Validators.required],
-      standards : [''],
-      active : [true],
+  setForm(course? : Course) {
+    if (course) {
+      this.formTitle = 'Edit ' + course.name;
+      this.courseForm = this.fb.group({
+        id : [course.id],
+        name : [course.name, Validators.required],
+        section : [course.section, Validators.required],
+        standards : [course.standards],
+        active : [course.active]
+      });
+    } else {
+      this.formTitle = 'Add a Course';
+      this.courseForm = this.fb.group({
+        name : ['', Validators.required],
+        section : ['', Validators.required],
+        standards : [''],
+        active : [true],
     });
+    }
   }
 
   getCourses() {
     this.coursesService.getCourses()
     .subscribe(courses => {
-      this.courses = courses;
+      if (this.showActive) {
+        this.courses = courses.filter(course => course.active);
+      } else {
+        this.courses = courses;
+      }
     })
   }
 
   updateCourse() {
-    let newCourse = this.courseForm.value;
-    this.coursesService.createCourse(newCourse)
-      .subscribe(res => console.log(res));
+    if (this.courseForm.value.id) {
+      let id = this.courseForm.value.id;
+      let updatedCourse = this.courseForm.value;
+      // Delete the id field from the object before saving
+      delete updatedCourse.id;
+      this.coursesService.updateCourse(updatedCourse, id)
+        .subscribe(() => this.setForm());
+    } else {
+      let newCourse = this.courseForm.value;
+      this.coursesService.createCourse(newCourse)
+        .subscribe(() => this.setForm());
+    }
   }
 
+  deleteCourse(course) {
+    let result = confirm("Are you sure you want to delete '" + course.name + " | " + course.section + "'?");
+    if (result) {
+      return this.coursesService.deleteCourse(course)
+        .subscribe();
+    }
+  }
+
+  archiveToggle(course) {
+    let id = course.id;
+    let active = {
+      active : !course.active,
+    };
+    this.coursesService.updateCourse(active, id)
+      .subscribe();
+  }
+
+  getStandards() {
+    return [
+      { id: '1', name: 'order 1' },
+      { id: '2', name: 'order 2' },
+      { id: '3', name: 'order 3' },
+      { id: '4', name: 'order 4' }
+    ];
+  }
 }

@@ -2,35 +2,60 @@
 
 <main>
     <div class="row">
-        <div class="col-sm-8">
+        <div class="col-10">
             <h1>Courses</h1>
         </div>
-        <div class="col-sm-4 text-right">
-            <button type="button" class="btn btn-outline-primary add-button" data-toggle="modal" data-target="#courseFormModal">
+        <div class="col-2 text-right">
+            <button type="button" class="btn btn-outline-primary add-button" data-toggle="modal" data-target="#courseFormModal" (click)="setForm()">
                 <i class="fas fa-plus-circle"></i>
             </button>
         </div>
     </div>
-    <table class="table table-striped">
-        <thead>
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th style="width: 25%;">Course</th>
+                    <th style="width: 20%;">Section</th>
+                    <th style="width: 20%;">Students</th>
+                    <th style="width: 20%;">Standards</th>
+                    <th style="width: 15%;">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let course of courses" [class.table-warning]="!course.active">
+                    <td>{{ course.name }}</td>
+                    <td>{{ course.section }}</td>
+                    <td># of students</td>
+                    <td>{{ course.standards }}</td>
+                    <td>
+                        <div *ngIf="course.active; else archived">
+                            <a class="btn text-info action-button" data-toggle="modal" data-target="#courseFormModal" (click)="setForm(course)"><i class="fas fa-edit" data-toggle="tooltip" title="Edit {{ course.name + ' | ' + course.section }}"></i></a>
+                            <a class="btn text-warning action-button"><i class="fas fa-archive" (click)="archiveToggle(course)" data-toggle="tooltip" title="Archive {{ course.name + ' | ' + course.section }}"></i></a>
+                            <a class="btn text-danger action-button" (click)="deleteCourse(course)"><i class="fas fa-trash-alt" data-toggle="tooltip" title="Delete {{ course.name + ' | ' + course.section }}"></i></a>
+                        </div>
+                        <ng-template #archived>
+                            <a class="btn text-info action-button" data-toggle="modal" data-target="#courseFormModal" (click)="setForm(course)"><i class="fas fa-edit" data-toggle="tooltip" title="Edit {{ course.name + ' | ' + course.section }}"></i></a>
+                            <a class="btn text-warning action-button" (click)="archiveToggle(course)"><i class="fas fa-undo" data-toggle="tooltip" title="Restore {{ course.name + ' | ' + course.section }}"></i></a>
+                            <a class="btn text-danger action-button" (click)="deleteCourse(course)"><i class="fas fa-trash-alt" data-toggle="tooltip" title="Delete {{ course.name + ' | ' + course.section }}"></i></a>
+                        </ng-template>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <tfoot>
             <tr>
-                <th>Course</th>
-                <th>Section</th>
-                <th>Students</th>
-                <th>Standards</th>
-                <th>Actions</th>
+                <td colspan="100%">
+                    <!-- Inline style to stop the scrollbar on larger screens. -->
+                    <div class="row" style="margin: auto; min-width: 1024px;">
+                        <div class="col-4">
+                            <label><input type="checkbox" (change)="getCourses()" [(ngModel)]="showActive">&nbsp;&nbsp;Show only active courses</label>
+                        </div>     
+                    </div>
+                </td>
             </tr>
-        </thead>
-        <tbody>
-            <tr *ngFor="let course of courses">
-                <td>{{ course.name }}</td>
-                <td>{{ course.section }}</td>
-                <td># of students</td>
-                <td>{{ course.standards }}</td>
-                <td>Action Buttons</td>
-            </tr>
-        </tbody>
-    </table>
+        </tfoot>
+    </div>
 </main>
 
 <app-footer></app-footer>
@@ -63,10 +88,9 @@
                     <label for="id_course_standards" class="col-sm-2 col-form-label">Standards:</label>
                     <div class="col-sm-10">
                         <select name="course_standards" class="form-control" id="id_course_standards" formControlName="standards">
-                            <option value="" selected>---------</option>
-                            <option value="24">Honors 10</option>
-                            <option value="25">English 10</option>
-                            <option value="26">Computer Science 1</option>
+                            <option *ngFor="let standard of standards" [ngValue]="standard.id">
+                                {{ standard.name }}
+                            </option>
                         </select>
                     </div>
                   </div>

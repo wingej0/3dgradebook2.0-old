@@ -20,6 +20,16 @@ main {
   align-items: center;
 }
 
+/* Fix alignment of add and import buttons above tables */
 .add-button {
   margin-top: .5em;
+}
+
+/* Fix alignment of action buttons in tables */
+.action-button {
+  margin: -0.5em auto;
+}
+
+table {
+  min-width: 1024px;
 }
