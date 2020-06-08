@@ -7,8 +7,11 @@
         </div>
         <div class="col-2 text-right">
             <button type="button" class="btn btn-outline-primary add-button" data-toggle="modal" data-target="#courseFormModal" (click)="setForm()">
-                <i class="fas fa-plus-circle"></i>
+                <i class="fas fa-plus-circle"></i> Add
             </button>
+            <a href="/canvas-courses" type="button" class="btn btn-outline-warning add-button">
+                <i class="fas fa-file-import"></i> Import
+            </a>
         </div>
     </div>
     <div class="table-responsive">
@@ -72,27 +75,21 @@
                 </button>
               </div>
               <div class="modal-body">
-                <div class="form-group row">
-                    <label for="id_course_name" class="col-sm-2 col-form-label">Name:</label>
-                    <div class="col-sm-10">
-                        <input type="text" name="course_name" id="id_course_name"  class="form-control" placeholder="Name" formControlName="name" required />
-                    </div>
+                <div class="form-group">
+                    <label for="id_course_name">Name:</label>
+                    <input type="text" name="course_name" id="id_course_name"  class="form-control" formControlName="name" required />
                 </div>
-                <div class="form-group row">
-                    <label for="id_section_name" class="col-sm-2 col-form-label">Section:</label>
-                    <div class="col-sm-10">
-                        <input type="text" name="section_name" id="id_section_name"  class="form-control" placeholder="Section" formControlName="section" required />
-                    </div>
+                <div class="form-group">
+                    <label for="id_section_name">Section:</label>
+                    <input type="text" name="section_name" id="id_section_name"  class="form-control" formControlName="section" required />
                 </div>
-                <div class="form-group row">
-                    <label for="id_course_standards" class="col-sm-2 col-form-label">Standards:</label>
-                    <div class="col-sm-10">
-                        <select name="course_standards" class="form-control" id="id_course_standards" formControlName="standardsID">
-                            <option *ngFor="let standard of standards" [ngValue]="standard.id">
-                                {{ standard.name }}
-                            </option>
-                        </select>
-                    </div>
+                <div class="form-group">
+                    <label for="id_course_standards">Standards:</label>
+                    <select name="course_standards" class="form-control" id="id_course_standards" formControlName="standardsID">
+                        <option *ngFor="let standard of standards" [ngValue]="standard.id">
+                            {{ standard.name }}
+                        </option>
+                    </select>
                   </div>
                 <div class="form-check row">
                     <div class="checkbox col-sm-12 text-right">

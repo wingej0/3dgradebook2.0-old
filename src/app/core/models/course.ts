@@ -1,8 +1,10 @@
 export interface Course {
-    id: string,
+    id?: string,
     name: string,
-    section: string,
+    section?: string,
     active: boolean,
     standardsID?: string,
-    standardsName: string
+    standardsName?: string,
+    courseID?: number,
+    sectionID?: number,
 }

@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CoursesService } from 'src/app/core/services/courses/courses.service';
 import { FormBuilder, Validators } from '@angular/forms';
 import { Course } from 'src/app/core/models/course';
+import { CanvasCoursesService } from 'src/app/core/services/canvas-courses/canvas-courses.service';
 
 @Component({
   selector: 'app-courses',
@@ -18,7 +19,8 @@ export class CoursesComponent implements OnInit {
 
   constructor(
     private coursesService : CoursesService,
-    private fb : FormBuilder
+    private fb : FormBuilder,
+    private canvasCoursesService : CanvasCoursesService
   ) { }
 
   ngOnInit(): void {
@@ -64,9 +66,11 @@ export class CoursesComponent implements OnInit {
       let id = this.courseForm.value.id;
       let updatedCourse = this.courseForm.value;
       // Add standardsName to object before saving
-      let newStandardsID = this.courseForm.value.standardsID;
-      let newStandardsName = this.standards.find(standards => standards.id == newStandardsID).name;
-      updatedCourse.standardsName = newStandardsName;
+      if (this.courseForm.value.standardsID) {
+        let newStandardsID = this.courseForm.value.standardsID;
+        let newStandardsName = this.standards.find(standards => standards.id == newStandardsID).name;
+        updatedCourse.standardsName = newStandardsName;
+      };
       // Delete the id field from the object before saving
       delete updatedCourse.id;
       this.coursesService.updateCourse(updatedCourse, id)
@@ -74,9 +78,11 @@ export class CoursesComponent implements OnInit {
     } else {
       let newCourse = this.courseForm.value;
       // Add standardsName to object before saving
-      let newStandardsID = this.courseForm.value.standardsID;
-      let newStandardsName = this.standards.find(standards => standards.id == newStandardsID).name;
-      newCourse.standardsName = newStandardsName;
+      if (this.courseForm.value.standardsID) {
+        let newStandardsID = this.courseForm.value.standardsID;
+        let newStandardsName = this.standards.find(standards => standards.id == newStandardsID).name;
+        newCourse.standardsName = newStandardsName;
+      };
       this.coursesService.createCourse(newCourse)
         .subscribe(() => this.setForm());
     }
@@ -111,5 +117,10 @@ export class CoursesComponent implements OnInit {
   setSortBy(sortHeader : string) {
     this.sortBy = sortHeader;
     this.getCourses();
+  }
+
+  importFromCanvas() {
+    this.canvasCoursesService.getCourses()
+      .subscribe(courses => console.log(courses));
   }
 }

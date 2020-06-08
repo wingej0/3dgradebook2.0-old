@@ -13,6 +13,7 @@ th a.btn {
   color: #056C13 !important;
   font-style: italic;
   font-weight: bold;
+  padding: 0;
 }
 
 /* Creates a top margin to slide underneath nav bar and adds conatainer width */
@@ -30,9 +31,10 @@ main {
 /* Fix alignment of add and import buttons above tables */
 .add-button {
   margin-top: .5em;
+  margin-left: .25em;
 }
 
-a.btn {
+table a.btn {
   padding-top: 0;
   padding-bottom: 0;
 }

@@ -6,4 +6,9 @@ export interface User {
     school? : string,
     city? : string,
     state? : string,
+    import? : {
+        source? : string,
+        domain? : string,
+        token? : string,
+    },
 }
