@@ -9,6 +9,7 @@ import { Course } from 'src/app/core/models/course';
   styleUrls: ['./courses.component.css']
 })
 export class CoursesComponent implements OnInit {
+  import : string = sessionStorage.getItem("import");
   formTitle : string;
   courseForm;
   courses : Course[];

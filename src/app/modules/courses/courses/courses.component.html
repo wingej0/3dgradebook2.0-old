@@ -9,7 +9,7 @@
             <button type="button" class="btn btn-outline-primary add-button" data-toggle="modal" data-target="#courseFormModal" (click)="setForm()">
                 <i class="fas fa-plus-circle"></i> Add
             </button>
-            <a href="/canvas-courses" type="button" class="btn btn-outline-warning add-button">
+            <a *ngIf="import == 'true'" href="/canvas-courses" type="button" class="btn btn-outline-warning add-button">
                 <i class="fas fa-file-import"></i> Import
             </a>
         </div>
@@ -17,7 +17,7 @@
     <div class="table-responsive">
         <table class="table table-striped">
             <thead>
-                <tr class="table-active">
+                <tr *ngIf="courses?.length > 5" class="table-active">
                     <td colspan="100%">
                         <div class="row" style="margin: auto; min-width: 1024px;">
                             <div class="col-4">

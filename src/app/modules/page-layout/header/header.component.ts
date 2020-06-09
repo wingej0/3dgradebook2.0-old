@@ -13,6 +13,15 @@ export class HeaderComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+    // Set a variable in sessionStorage for showing or hiding import buttons
+    this.auth.user$
+      .subscribe(user => {
+        if (user.import) {
+          sessionStorage.setItem("import", "true");
+        } else {
+          sessionStorage.setItem("import", "false");
+        }
+      })
   }
 
 }
