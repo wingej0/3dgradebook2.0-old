@@ -4,6 +4,7 @@ import { CoursesComponent } from './courses/courses.component';
 import { PageLayoutModule } from '../page-layout/page-layout.module';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { CanvasCoursesComponent } from './canvas-courses/canvas-courses.component';
+import { SharedModule } from 'src/app/shared/shared.module';
 
 
 
@@ -13,7 +14,8 @@ import { CanvasCoursesComponent } from './canvas-courses/canvas-courses.componen
     CommonModule,
     PageLayoutModule,
     FormsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    SharedModule
   ]
 })
 export class CoursesModule { }

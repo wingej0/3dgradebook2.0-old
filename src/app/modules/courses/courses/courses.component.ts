@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { CoursesService } from 'src/app/core/services/courses/courses.service';
 import { FormBuilder, Validators } from '@angular/forms';
 import { Course } from 'src/app/core/models/course';
-import { CanvasCoursesService } from 'src/app/core/services/canvas-courses/canvas-courses.service';
 
 @Component({
   selector: 'app-courses',
@@ -16,11 +15,17 @@ export class CoursesComponent implements OnInit {
   standards;
   showActive : boolean = true;
   sortBy : string = "section";
+  filterText : string;
+  
+  // Properties for pagination
+  itemsPerPage : number = 5;
+  start : number = 0;
+  end : number = 5;
+  page : number = 1;
 
   constructor(
     private coursesService : CoursesService,
     private fb : FormBuilder,
-    private canvasCoursesService : CanvasCoursesService
   ) { }
 
   ngOnInit(): void {
@@ -119,8 +124,24 @@ export class CoursesComponent implements OnInit {
     this.getCourses();
   }
 
-  importFromCanvas() {
-    this.canvasCoursesService.getCourses()
-      .subscribe(courses => console.log(courses));
+  // Pagination
+  setItemsPerPage(itemsPerPage : number) {
+    if (!isNaN(itemsPerPage)) {
+      this.itemsPerPage = itemsPerPage;
+      this.end = this.start + this.itemsPerPage;
+      if (itemsPerPage < this.courses.length && this.courses.length > ((this.page -1) * itemsPerPage)) {
+        this.changePage(this.page);
+      } else {
+        this.changePage(Math.ceil(this.courses.length / itemsPerPage));
+      }
+    } else {
+      this.itemsPerPage = this.itemsPerPage;
+    } 
+  }
+
+  changePage(page) {
+    this.page = page;
+    this.start = ((page -1) * this.itemsPerPage);
+    this.end = (this.start + this.itemsPerPage);
   }
 }

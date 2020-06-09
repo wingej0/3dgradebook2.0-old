@@ -4,6 +4,7 @@ import { HomeModule } from './home/home.module';
 import { DashboardModule } from './dashboard/dashboard.module';
 import { PageLayoutModule } from './page-layout/page-layout.module';
 import { CoursesModule } from './courses/courses.module';
+import { SharedModule } from '../shared/shared.module';
 
 
 
@@ -14,7 +15,8 @@ import { CoursesModule } from './courses/courses.module';
     PageLayoutModule,
     HomeModule,
     DashboardModule,
-    CoursesModule
+    CoursesModule,
+    SharedModule
   ]
 })
 export class ModulesModule { }

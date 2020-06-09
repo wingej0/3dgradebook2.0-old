@@ -2,10 +2,10 @@
 
 <main>
     <div class="row">
-        <div class="col-10">
+        <div class="col-6">
             <h1>Courses</h1>
         </div>
-        <div class="col-2 text-right">
+        <div class="col-6 text-right">
             <button type="button" class="btn btn-outline-primary add-button" data-toggle="modal" data-target="#courseFormModal" (click)="setForm()">
                 <i class="fas fa-plus-circle"></i> Add
             </button>
@@ -17,6 +17,22 @@
     <div class="table-responsive">
         <table class="table table-striped">
             <thead>
+                <tr class="table-active">
+                    <td colspan="100%">
+                        <div class="row" style="margin: auto; min-width: 1024px;">
+                            <div class="col-4">
+                                <form class="form-inline">
+                                    <input type="number" id="itemsPerPage" class="form-control form-control-sm" style="width: 4em;" [value]="itemsPerPage" (change)="setItemsPerPage($event.target.valueAsNumber)">
+                                    <label for="itemsPerPage">&nbsp; courses per page</label>
+                                </form>
+                            </div>
+                            <div class="col-4">&nbsp;</div>
+                            <div class="col-4 text-right">
+                                <input type="text" class="form-control form-control-sm" placeholder="Search Courses" [(ngModel)]="filterText">
+                            </div>
+                        </div>
+                    </td>
+                </tr>
                 <tr>
                     <th style="width: 25%;"><a class="btn" (click)="setSortBy('name')">Course</a></th>
                     <th style="width: 20%;"><a class="btn" (click)="setSortBy('section')">Section</a></th>
@@ -26,7 +42,7 @@
                 </tr>
             </thead>
             <tbody>
-                <tr *ngFor="let course of courses" [class.table-warning]="!course.active">
+                <tr *ngFor="let course of courses | itemFilter:filterText | slice:start:end" [class.table-warning]="!course.active">
                     <td>{{ course.name }}</td>
                     <td>{{ course.section }}</td>
                     <td># of students</td>
@@ -45,22 +61,28 @@
                     </td>
                 </tr>
             </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="100%">
+                        <!-- Inline style to stop the scrollbar on larger screens. -->
+                        <div class="row" style="margin: auto; min-width: 1024px;">
+                            <div class="col-4">
+                                <label><input type="checkbox" (change)="getCourses()" [(ngModel)]="showActive">&nbsp;&nbsp;Show only active courses</label>
+                            </div>
+                            <div class="col-4 text-center">
+                                  <p><a *ngIf="page > 1" class="btn text-primary" (click)="changePage(page -1)"><i class="fas fa-backward"></i></a>Page {{ page }}<a *ngIf="itemsPerPage < courses?.length && end < courses?.length" class="btn text-primary" (click)="changePage(page + 1)"><i class="fas fa-forward"></i></a></p>
+                            </div>
+                            <div class="col-4 text-right">
+                                <p *ngIf="end < courses?.length; else pageEnd">Showing courses {{ start + 1 | number }}-{{ end | number }} out of {{ courses?.length | number }}</p>
+                                <ng-template #pageEnd>Showing courses {{ start + 1 | number }}-{{ courses?.length | number }} out of {{ courses?.length | number }}</ng-template>
+                            </div>     
+                        </div>
+                    </td>
+                </tr>
+            </tfoot>
         </table>
-        <tfoot>
-            <tr>
-                <td colspan="100%">
-                    <!-- Inline style to stop the scrollbar on larger screens. -->
-                    <div class="row" style="margin: auto; min-width: 1024px;">
-                        <div class="col-4">
-                            <label><input type="checkbox" (change)="getCourses()" [(ngModel)]="showActive">&nbsp;&nbsp;Show only active courses</label>
-                        </div>     
-                    </div>
-                </td>
-            </tr>
-        </tfoot>
     </div>
 </main>
-
 <app-footer></app-footer>
 
 <!-- Modal -->

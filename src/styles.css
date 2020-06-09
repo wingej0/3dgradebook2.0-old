@@ -18,7 +18,9 @@ th a.btn {
 
 /* Creates a top margin to slide underneath nav bar and adds conatainer width */
 main {
-	margin: 20px auto;
+  margin: 20px auto;
+  /* Padding to clear the sticky footer */
+  padding-bottom: 50px;
 	width: 95%;
 }
 
