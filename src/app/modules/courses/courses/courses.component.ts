@@ -10,6 +10,7 @@ import { Course } from 'src/app/core/models/course';
 })
 export class CoursesComponent implements OnInit {
   import : string = sessionStorage.getItem("import");
+  loader : boolean = true;
   formTitle : string;
   courseForm;
   courses : Course[];
@@ -61,8 +62,10 @@ export class CoursesComponent implements OnInit {
     .subscribe(courses => {
       if (this.showActive) {
         this.courses = courses.filter(course => course.active);
+        this.loader = false;
       } else {
         this.courses = courses;
+        this.loader = false;
       }
     })
   }

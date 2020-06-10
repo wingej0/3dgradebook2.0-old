@@ -42,6 +42,14 @@
                 </tr>
             </thead>
             <tbody>
+                <tr *ngIf="loader" class="loader">
+                    <td colspan="100%">
+                        <div class="d-flex align-items-center">
+                            <strong>Loading...</strong>
+                            <div class="spinner-border ml-auto" role="status" aria-hidden="true"></div>
+                        </div>
+                    </td>
+                </tr>
                 <tr *ngFor="let course of courses | itemFilter:filterText | slice:start:end" [class.table-warning]="!course.active">
                     <td>{{ course.name }}</td>
                     <td>{{ course.section }}</td>

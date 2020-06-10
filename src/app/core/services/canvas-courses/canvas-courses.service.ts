@@ -22,7 +22,7 @@ export class CanvasCoursesService {
         let domain = user.import.domain;
         let token = user.import.token;
         const headers = new HttpHeaders().set('Authorization', 'Bearer ' + token);
-        return this.http.get('https://cors-anywhere.herokuapp.com/' + user.import.domain + '/api/v1/courses/' + courseID + '/sections', { headers })
+        return this.http.get('https://cors-anywhere.herokuapp.com/' + domain + '/api/v1/courses/' + courseID + '/sections', { headers })
       }))
   }
   

@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CanvasCoursesService } from 'src/app/core/services/canvas-courses/canvas-courses.service';
 import { CoursesService } from 'src/app/core/services/courses/courses.service';
-import { Course } from 'src/app/core/models/course';
 
 @Component({
   selector: 'app-canvas-courses',
@@ -9,6 +8,7 @@ import { Course } from 'src/app/core/models/course';
   styleUrls: ['./canvas-courses.component.css']
 })
 export class CanvasCoursesComponent implements OnInit {
+  loader : boolean = true;
   courses;
   canvasCourses;
 
@@ -26,6 +26,7 @@ export class CanvasCoursesComponent implements OnInit {
     this.canvasCoursesService.getCourses()
     .subscribe(canvasCourses => {
       this.canvasCourses = canvasCourses;
+      this.loader = false;
     })
   }
 
@@ -49,7 +50,9 @@ export class CanvasCoursesComponent implements OnInit {
         };
         if (!this.courses.find(course => course.sectionID == newCourse.sectionID)) {
           this.coursesService.createCourse(newCourse)
-          .subscribe();
+          .subscribe(() => alert(newCourse.name + " has been successfully imported."));
+        } else {
+          alert(newCourse.name + " has already been imported.  It has not been duplicated in your courses list.")
         }
       }
     })

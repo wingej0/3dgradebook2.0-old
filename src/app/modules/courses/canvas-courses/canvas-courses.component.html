@@ -22,6 +22,14 @@
                 </tr>
             </thead>
             <tbody>
+                <tr *ngIf="loader" class="loader">
+                    <td colspan="100%">
+                        <div class="d-flex align-items-center">
+                            <strong>Loading...</strong>
+                            <div class="spinner-border ml-auto" role="status" aria-hidden="true"></div>
+                        </div>
+                    </td>
+                </tr>
                 <tr *ngFor="let course of canvasCourses">
                     <td>{{ course.id }}</td>
                     <td>{{ course.name }}</td>
