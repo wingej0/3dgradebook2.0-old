@@ -34,9 +34,13 @@
                     <td>{{ course.id }}</td>
                     <td>{{ course.name }}</td>
                     <td>{{ course.start_at | date }}</td>
-                    <td> <a type="button" class="btn text-warning action-button" (click)="getSections(course.id)">
-                        <i class="fas fa-file-import"></i>
-                    </a></td>
+                    <td><a type="button" class="btn text-warning action-button" (click)="importOne(course)">
+                            <i class="fas fa-file-import" data-toggle="tooltip" title="Import {{ course.name }}"></i>
+                        </a>
+                        <a type="button" class="btn text-danger action-button" (click)="removeCourse(course)">
+                            <i class="fas fa-minus-circle" data-toggle="tooltip" title="Remove {{ course.name }} from import list"></i>
+                        </a>
+                    </td>
                 </tr>
             </tbody>
         </table>

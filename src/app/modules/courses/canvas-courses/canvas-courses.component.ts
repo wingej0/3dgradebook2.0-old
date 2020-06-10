@@ -1,6 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { CanvasCoursesService } from 'src/app/core/services/canvas-courses/canvas-courses.service';
 import { CoursesService } from 'src/app/core/services/courses/courses.service';
+import { Course } from 'src/app/core/models/course';
+import { Router } from '@angular/router';
+import { take } from 'rxjs/operators';
 
 @Component({
   selector: 'app-canvas-courses',
@@ -8,13 +11,14 @@ import { CoursesService } from 'src/app/core/services/courses/courses.service';
   styleUrls: ['./canvas-courses.component.css']
 })
 export class CanvasCoursesComponent implements OnInit {
-  loader : boolean = true;
   courses;
-  canvasCourses;
+  canvasCourses : any[];
+  loader : boolean = true;
 
   constructor(
     private canvasCoursesService : CanvasCoursesService,
-    private coursesService : CoursesService
+    private coursesService : CoursesService,
+    private router : Router
   ) { }
 
   ngOnInit(): void {
@@ -24,6 +28,7 @@ export class CanvasCoursesComponent implements OnInit {
 
   getCanvasCourses() {
     this.canvasCoursesService.getCourses()
+    .pipe(take(1))
     .subscribe(canvasCourses => {
       this.canvasCourses = canvasCourses;
       this.loader = false;
@@ -50,9 +55,7 @@ export class CanvasCoursesComponent implements OnInit {
         };
         if (!this.courses.find(course => course.sectionID == newCourse.sectionID)) {
           this.coursesService.createCourse(newCourse)
-          .subscribe(() => alert(newCourse.name + " has been successfully imported."));
-        } else {
-          alert(newCourse.name + " has already been imported.  It has not been duplicated in your courses list.")
+          .subscribe();
         }
       }
     })
@@ -62,6 +65,16 @@ export class CanvasCoursesComponent implements OnInit {
     for (let course of this.canvasCourses) {
       this.getSections(course.id);
     }
+    return this.router.navigate(['/courses']);
   }
 
+  importOne(course) {
+    this.getSections(course.id);
+    alert(course.name + " has been imported successfully.");
+  }
+
+  removeCourse(course) {
+    let toDelete = this.canvasCourses.findIndex(c => c.id == course.id);
+    this.canvasCourses.splice(toDelete, 1);
+  }
 }
