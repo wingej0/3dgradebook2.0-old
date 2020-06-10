@@ -36,7 +36,7 @@
                 <tr>
                     <th style="width: 25%;"><a class="btn" (click)="setSortBy('name')">Course</a></th>
                     <th style="width: 20%;"><a class="btn" (click)="setSortBy('section')">Section</a></th>
-                    <th style="width: 20%;">Students</th>
+                    <th style="width: 20%;"><a class="btn" (click)="setSortBy('numberOfStudents')">Students</a></th>
                     <th style="width: 20%;"><a class="btn" (click)="setSortBy('standardsName')">Standards</a></th>
                     <th style="width: 15%;">Actions</th>
                 </tr>
@@ -53,7 +53,7 @@
                 <tr *ngFor="let course of courses | itemFilter:filterText | slice:start:end" [class.table-warning]="!course.active">
                     <td>{{ course.name }}</td>
                     <td>{{ course.section }}</td>
-                    <td># of students</td>
+                    <td>{{ course.numberOfStudents }}</td>
                     <td>{{ course.standardsName }}</td>
                     <td>
                         <div *ngIf="course.active; else archived">
@@ -77,10 +77,10 @@
                             <div class="col-4">
                                 <label><input type="checkbox" (change)="getCourses()" [(ngModel)]="showActive">&nbsp;&nbsp;Show only active courses</label>
                             </div>
-                            <div class="col-4 text-center">
+                            <div *ngIf="courses?.length > 0" class="col-4 text-center">
                                   <p><a *ngIf="page > 1" class="btn text-primary" (click)="changePage(page -1)"><i class="fas fa-backward"></i></a>Page {{ page }}<a *ngIf="itemsPerPage < courses?.length && end < courses?.length" class="btn text-primary" (click)="changePage(page + 1)"><i class="fas fa-forward"></i></a></p>
                             </div>
-                            <div class="col-4 text-right">
+                            <div *ngIf="courses?.length > 0" class="col-4 text-right">
                                 <p *ngIf="end < courses?.length; else pageEnd">Showing courses {{ start + 1 | number }}-{{ end | number }} out of {{ courses?.length | number }}</p>
                                 <ng-template #pageEnd>Showing courses {{ start + 1 | number }}-{{ courses?.length | number }} out of {{ courses?.length | number }}</ng-template>
                             </div>     

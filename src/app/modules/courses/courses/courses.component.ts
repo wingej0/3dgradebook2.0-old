@@ -67,6 +67,9 @@ export class CoursesComponent implements OnInit {
         this.courses = courses;
         this.loader = false;
       }
+    },
+    error => {
+      alert(error.message);
     })
   }
 
@@ -83,7 +86,12 @@ export class CoursesComponent implements OnInit {
       // Delete the id field from the object before saving
       delete updatedCourse.id;
       this.coursesService.updateCourse(updatedCourse, id)
-        .subscribe(() => this.setForm());
+        .subscribe(() => {
+          this.setForm()
+        },
+        error => {
+          alert(error.message);
+        });
     } else {
       let newCourse = this.courseForm.value;
       // Add standardsName to object before saving
@@ -93,7 +101,12 @@ export class CoursesComponent implements OnInit {
         newCourse.standardsName = newStandardsName;
       };
       this.coursesService.createCourse(newCourse)
-        .subscribe(() => this.setForm());
+        .subscribe(() => {
+          this.setForm()
+        },
+        error => {
+          alert(error.message);
+        });
     }
   }
 
@@ -101,7 +114,12 @@ export class CoursesComponent implements OnInit {
     let result = confirm("Are you sure you want to delete '" + course.name + " | " + course.section + "'?");
     if (result) {
       return this.coursesService.deleteCourse(course)
-        .subscribe();
+        .subscribe(() => {
+          return;
+        },
+        error => {
+          alert(error.message);
+        });
     }
   }
 
@@ -111,7 +129,12 @@ export class CoursesComponent implements OnInit {
       active : !course.active,
     };
     this.coursesService.updateCourse(active, id)
-      .subscribe();
+      .subscribe(() => {
+        return;
+      },
+      error => {
+        alert(error.message);
+      });
   }
 
   getStandards() {

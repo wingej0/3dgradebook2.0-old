@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CanvasCoursesService } from 'src/app/core/services/canvas-courses/canvas-courses.service';
 import { CoursesService } from 'src/app/core/services/courses/courses.service';
-import { Course } from 'src/app/core/models/course';
 import { Router } from '@angular/router';
 import { take } from 'rxjs/operators';
 
@@ -32,6 +31,9 @@ export class CanvasCoursesComponent implements OnInit {
     .subscribe(canvasCourses => {
       this.canvasCourses = canvasCourses;
       this.loader = false;
+    },
+    error => {
+      alert(error.message);
     })
   }
 
@@ -49,13 +51,19 @@ export class CanvasCoursesComponent implements OnInit {
         let newCourse = {
           name : section.name,
           section : "",
+          numberOfStudents : 0,
           active : true,
           courseID : section.course_id,
           sectionID : section.id
         };
         if (!this.courses.find(course => course.sectionID == newCourse.sectionID)) {
           this.coursesService.createCourse(newCourse)
-          .subscribe();
+          .subscribe(() => {
+            return;
+          },
+          error => {
+            alert(error.message);
+          });
         }
       }
     })

@@ -32,6 +32,7 @@ export class CoursesService {
   createCourse(course: Course) : Observable<any> {
     return this.auth.user$
       .pipe(concatMap(user => {
+        course.numberOfStudents = 0;
         let courseRef = this.db.list(`${user.uid}/courses`);
         return from(courseRef.push(course));
       }));
