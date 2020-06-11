@@ -1,6 +1,7 @@
 <app-header></app-header>
 
 <main>
+    <!-- Standard page header - Title on left/add and import buttons on right -->
     <div class="row">
         <div class="col-6">
             <h1>Courses</h1>
@@ -14,11 +15,14 @@
             </a>
         </div>
     </div>
+    <!-- Responsive table -->
     <div class="table-responsive">
         <table class="table table-striped">
             <thead>
+                <!-- Pagination and search row -->
                 <tr *ngIf="courses?.length > 5" class="table-active">
                     <td colspan="100%">
+                        <!-- Inline style to stop the scrollbar on larger screens. -->
                         <div class="row" style="margin: auto; min-width: 1024px;">
                             <div class="col-4">
                                 <form class="form-inline">
@@ -33,6 +37,7 @@
                         </div>
                     </td>
                 </tr>
+                <!-- Sortable headers -->
                 <tr>
                     <th style="width: 25%;"><a class="btn" (click)="setSortBy('name')">Course</a></th>
                     <th style="width: 20%;"><a class="btn" (click)="setSortBy('section')">Section</a></th>
@@ -42,6 +47,7 @@
                 </tr>
             </thead>
             <tbody>
+                <!-- Simple Bootstrap loader -->
                 <tr *ngIf="loader" class="loader">
                     <td colspan="100%">
                         <div class="d-flex align-items-center">
@@ -50,12 +56,14 @@
                         </div>
                     </td>
                 </tr>
+                <!-- Courses with pipes for filtering and pagination -->
                 <tr *ngFor="let course of courses | itemFilter:filterText | slice:start:end" [class.table-warning]="!course.active">
                     <td>{{ course.name }}</td>
                     <td>{{ course.section }}</td>
                     <td>{{ course.numberOfStudents }}</td>
                     <td>{{ course.standardsName }}</td>
                     <td>
+                        <!-- Actions cell -->
                         <div *ngIf="course.active; else archived">
                             <a class="btn text-info action-button" data-toggle="modal" data-target="#courseFormModal" (click)="setForm(course)"><i class="fas fa-edit" data-toggle="tooltip" title="Edit {{ course.name + ' | ' + course.section }}"></i></a>
                             <a class="btn text-warning action-button"><i class="fas fa-archive" (click)="archiveToggle(course)" data-toggle="tooltip" title="Archive {{ course.name + ' | ' + course.section }}"></i></a>
@@ -72,6 +80,7 @@
             <tfoot>
                 <tr>
                     <td colspan="100%">
+                        <!-- Pagination in table footer -->
                         <!-- Inline style to stop the scrollbar on larger screens. -->
                         <div class="row" style="margin: auto; min-width: 1024px;">
                             <div class="col-4">
@@ -91,9 +100,10 @@
         </table>
     </div>
 </main>
+
 <app-footer></app-footer>
 
-<!-- Modal -->
+<!-- Modal form for adding and updating courses -->
 <div class="modal fade" id="courseFormModal" tabindex="-1" role="dialog" aria-labelledby="courseFormModal" aria-hidden="true">
     <form [formGroup]="courseForm">
         <div class="modal-dialog" role="document">

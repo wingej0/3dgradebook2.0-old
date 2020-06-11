@@ -9,15 +9,20 @@ import { Course } from 'src/app/core/models/course';
   styleUrls: ['./courses.component.css']
 })
 export class CoursesComponent implements OnInit {
+  // Properties for ngIf statements and filtering
   import : string = sessionStorage.getItem("import");
   loader : boolean = true;
-  formTitle : string;
-  courseForm;
-  courses : Course[];
-  standards;
   showActive : boolean = true;
   sortBy : string = "section";
   filterText : string;
+
+  // Form properties
+  formTitle : string;
+  courseForm;
+
+  // Async data
+  courses : Course[];
+  standards;
   
   // Properties for pagination
   itemsPerPage : number = 5;
