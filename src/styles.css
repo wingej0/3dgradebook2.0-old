@@ -44,3 +44,8 @@ table a.btn {
 table {
   min-width: 1024px;
 }
+
+.select-btn {
+  margin: 0.2em 0;
+  padding: 0;
+}

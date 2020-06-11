@@ -90,6 +90,15 @@ export class CoursesComponent implements OnInit, OnDestroy {
     )
   }
 
+  getStandards() {
+    this.subs.add(
+      this.standardsService.getStandardsGroups()
+        .subscribe(standards => {
+          this.standards = standards;
+        })
+    )
+  }
+
   updateCourse() {
     if (this.courseForm.value.id) {
       let id = this.courseForm.value.id;
@@ -159,15 +168,6 @@ export class CoursesComponent implements OnInit, OnDestroy {
       error => {
         alert(error.message);
       })
-    )
-  }
-
-  getStandards() {
-    this.subs.add(
-      this.standardsService.getStandardsGroups()
-        .subscribe(standards => {
-          this.standards = standards;
-        })
     )
   }
 

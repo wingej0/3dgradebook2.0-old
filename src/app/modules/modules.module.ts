@@ -5,6 +5,7 @@ import { DashboardModule } from './dashboard/dashboard.module';
 import { PageLayoutModule } from './page-layout/page-layout.module';
 import { CoursesModule } from './courses/courses.module';
 import { SharedModule } from '../shared/shared.module';
+import { StandardsModule } from './standards/standards.module';
 
 
 
@@ -16,6 +17,7 @@ import { SharedModule } from '../shared/shared.module';
     HomeModule,
     DashboardModule,
     CoursesModule,
+    StandardsModule,
     SharedModule
   ]
 })

@@ -1,0 +1,65 @@
+<app-header></app-header>
+
+<main>
+    <!-- Standard page header - Title on left/add and import buttons on right -->
+    <div class="row">
+        <div class="col-6">
+            <h1>Standards</h1>
+        </div>
+        <div class="col-6 text-right">
+            <button type="button" class="btn btn-outline-primary add-button" data-toggle="modal" data-target="#courseFormModal">
+                <i class="fas fa-plus-circle"></i> Add
+            </button>
+            <a href="/canvas-courses" type="button" class="btn btn-outline-warning add-button">
+                <i class="fas fa-file-import"></i> Import
+            </a>
+        </div>
+    </div>
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead>
+                <tr class="table-active">
+                    <td colspan="100%">
+                        <!-- Inline style to stop the scrollbar on larger screens. -->
+                        <div class="row" style="margin: auto; min-width: 1024px;">
+                            <div class="col-4">
+                                <form class="form-inline">
+                                    <input type="number" id="itemsPerPage" class="form-control form-control-sm" style="width: 4em;">
+                                    <label for="itemsPerPage">&nbsp; standards per page</label>
+                                </form>
+                            </div>
+                            <div class="col-3 mr-0 pr-0">
+                                <form>
+                                    <select name="standards-groups" class="form-control form-control-sm" id="id_standards_groups" [(ngModel)]="activeGroup">
+                                        <option selected disabled [ngValue]="undefined">Select a Standards Group</option>
+                                        <option *ngFor="let group of standardsGroups" [ngValue]="group.id">
+                                            {{ group.name }}
+                                        </option>
+                                    </select>
+                                </form>  
+                            </div>
+                            <div class="col-2">
+                                <a class="btn text-primary select-btn"><i class="fas fa-plus-circle"></i></a>&nbsp;
+                                <a class="btn text-warning select-btn"><i class="fas fa-edit"></i></a>&nbsp;
+                                <a class="btn text-danger select-btn"><i class="fas fa-trash-alt"></i></a>
+                            </div>
+                            <div class="col-3 text-right">
+                                <input type="text" class="form-control form-control-sm" placeholder="Search Standards">
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                <!-- Sortable headers -->
+                <tr>
+                    <th style="width: 10%;"><a class="btn">Essential</a></th>
+                    <th style="width: 15%;"><a class="btn">Category</a></th>
+                    <th style="width: 15%;"><a class="btn">Name</a></th>
+                    <th style="width: 45%;"><a class="btn">Description</a></th>
+                    <th style="width: 15%;"><a class="btn">Actions</a></th>
+                </tr>
+            </thead>
+        </table>
+    </div>
+</main>
+
+<app-footer></app-footer>
