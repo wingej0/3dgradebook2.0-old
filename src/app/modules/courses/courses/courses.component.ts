@@ -1,14 +1,17 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CoursesService } from 'src/app/core/services/courses/courses.service';
 import { FormBuilder, Validators } from '@angular/forms';
 import { Course } from 'src/app/core/models/course';
+import { SubSink } from 'subsink';
 
 @Component({
   selector: 'app-courses',
   templateUrl: './courses.component.html',
   styleUrls: ['./courses.component.css']
 })
-export class CoursesComponent implements OnInit {
+export class CoursesComponent implements OnInit, OnDestroy {
+  private subs = new SubSink();
+  
   // Properties for ngIf statements and filtering
   import : string = sessionStorage.getItem("import");
   loader : boolean = true;
@@ -41,6 +44,10 @@ export class CoursesComponent implements OnInit {
     this.standards = this.getStandards();
   }
 
+  ngOnDestroy(): void {
+    this.subs.unsubscribe();
+  }
+
   setForm(course? : Course) {
     if (course) {
       this.formTitle = 'Edit ' + course.name;
@@ -63,19 +70,21 @@ export class CoursesComponent implements OnInit {
   }
 
   getCourses() {
-    this.coursesService.getCourses(this.sortBy)
-    .subscribe(courses => {
-      if (this.showActive) {
-        this.courses = courses.filter(course => course.active);
-        this.loader = false;
-      } else {
-        this.courses = courses;
-        this.loader = false;
-      }
-    },
-    error => {
-      alert(error.message);
-    })
+    this.subs.add(
+      this.coursesService.getCourses(this.sortBy)
+      .subscribe(courses => {
+        if (this.showActive) {
+          this.courses = courses.filter(course => course.active);
+          this.loader = false;
+        } else {
+          this.courses = courses;
+          this.loader = false;
+        }
+      },
+      error => {
+        alert(error.message);
+      })
+    )
   }
 
   updateCourse() {
@@ -90,13 +99,15 @@ export class CoursesComponent implements OnInit {
       };
       // Delete the id field from the object before saving
       delete updatedCourse.id;
-      this.coursesService.updateCourse(updatedCourse, id)
+      this.subs.add(
+        this.coursesService.updateCourse(updatedCourse, id)
         .subscribe(() => {
           this.setForm()
         },
         error => {
           alert(error.message);
-        });
+        })
+      )
     } else {
       let newCourse = this.courseForm.value;
       // Add standardsName to object before saving
@@ -105,26 +116,30 @@ export class CoursesComponent implements OnInit {
         let newStandardsName = this.standards.find(standards => standards.id == newStandardsID).name;
         newCourse.standardsName = newStandardsName;
       };
-      this.coursesService.createCourse(newCourse)
+      this.subs.add(
+        this.coursesService.createCourse(newCourse)
         .subscribe(() => {
           this.setForm()
         },
         error => {
           alert(error.message);
-        });
+        })
+      ) 
     }
   }
 
   deleteCourse(course) {
     let result = confirm("Are you sure you want to delete '" + course.name + " | " + course.section + "'?");
     if (result) {
-      return this.coursesService.deleteCourse(course)
+      return this.subs.add(
+        this.coursesService.deleteCourse(course)
         .subscribe(() => {
           return;
         },
         error => {
           alert(error.message);
-        });
+        })
+      )
     }
   }
 
@@ -133,13 +148,15 @@ export class CoursesComponent implements OnInit {
     let active = {
       active : !course.active,
     };
-    this.coursesService.updateCourse(active, id)
+    this.subs.add(
+      this.coursesService.updateCourse(active, id)
       .subscribe(() => {
         return;
       },
       error => {
         alert(error.message);
-      });
+      })
+    )
   }
 
   getStandards() {
