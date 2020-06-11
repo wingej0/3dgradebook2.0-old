@@ -3,6 +3,8 @@ import { CoursesService } from 'src/app/core/services/courses/courses.service';
 import { FormBuilder, Validators } from '@angular/forms';
 import { Course } from 'src/app/core/models/course';
 import { SubSink } from 'subsink';
+import { StandardsGroup } from 'src/app/core/models/standards-group';
+import { StandardsService } from 'src/app/core/services/standards/standards.service';
 
 @Component({
   selector: 'app-courses',
@@ -25,7 +27,7 @@ export class CoursesComponent implements OnInit, OnDestroy {
 
   // Async data
   courses : Course[];
-  standards;
+  standards : StandardsGroup[];
   
   // Properties for pagination
   itemsPerPage : number = 5;
@@ -35,13 +37,14 @@ export class CoursesComponent implements OnInit, OnDestroy {
 
   constructor(
     private coursesService : CoursesService,
+    private standardsService : StandardsService,
     private fb : FormBuilder,
   ) { }
 
   ngOnInit(): void {
     this.getCourses();
     this.setForm();
-    this.standards = this.getStandards();
+    this.getStandards();
   }
 
   ngOnDestroy(): void {
@@ -160,12 +163,12 @@ export class CoursesComponent implements OnInit, OnDestroy {
   }
 
   getStandards() {
-    return [
-      { id: '1', name: 'order 1' },
-      { id: '2', name: 'order 2' },
-      { id: '3', name: 'order 3' },
-      { id: '4', name: 'order 4' }
-    ];
+    this.subs.add(
+      this.standardsService.getStandardsGroups()
+        .subscribe(standards => {
+          this.standards = standards;
+        })
+    )
   }
 
   setSortBy(sortHeader : string) {
