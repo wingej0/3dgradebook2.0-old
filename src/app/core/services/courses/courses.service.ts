@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { AngularFireDatabase } from '@angular/fire/database';
 import { AuthService } from '../auth/auth.service';
 import { Course } from '../../models/course';
-import { Observable, from, combineLatest } from 'rxjs';
+import { Observable, from, combineLatest, BehaviorSubject } from 'rxjs';
 import { concatMap, map } from 'rxjs/operators';
 import { convertSnaps } from '../db-utils';
 import { StandardsService } from '../standards/standards.service';
@@ -21,11 +21,21 @@ export class CoursesService {
       );
     }));
   
+  private activeCoursesAction = new BehaviorSubject<boolean>(true);
+  activeCoursesAction$ = this.activeCoursesAction.asObservable();
+  
   displayedCourses$ : Observable<Course[]> = combineLatest(
     [this.courses$,
     this.standardsService.standardsGroups$,
-    this.studentsService.students$]
-  ).pipe(map(([courses, standards, students]) => {
+    this.studentsService.students$,
+    this.activeCoursesAction$
+  ]
+  ).pipe(map(([courses, standards, students, active]) => {
+    if (active) {
+      courses = courses.filter(course => course.active);
+    } else {
+      courses = courses;
+    }
     return courses.map(
       c => (
         {...c,
@@ -42,6 +52,10 @@ export class CoursesService {
     private standardsService : StandardsService,
     private studentsService : StudentsService
   ) { }
+
+  showActiveToggle(showActive) {
+    this.activeCoursesAction.next(showActive);
+  } 
 
   // Create new course
   createCourse(course: Course) : Observable<any> {

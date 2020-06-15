@@ -3,7 +3,6 @@ import { CoursesService } from 'src/app/core/services/courses/courses.service';
 import { FormBuilder, Validators } from '@angular/forms';
 import { Course } from 'src/app/core/models/course';
 import { SubSink } from 'subsink';
-import { StandardsGroup } from 'src/app/core/models/standards-group';
 import { StandardsService } from 'src/app/core/services/standards/standards.service';
 import { Observable, combineLatest } from 'rxjs';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
@@ -157,5 +156,9 @@ export class CoursesComponent implements OnInit, OnDestroy {
     this.page = page;
     this.start = ((page -1) * this.itemsPerPage);
     this.end = (this.start + this.itemsPerPage);
+  }
+
+  showActiveToggle(showActive) {
+    this.coursesService.showActiveToggle(showActive);
   }
 }

@@ -84,7 +84,7 @@
                         <!-- Inline style to stop the scrollbar on larger screens. -->
                         <div class="row" style="margin: auto; min-width: 1024px;">
                             <div class="col-4">
-                                <label><input type="checkbox" [(ngModel)]="showActive">&nbsp;&nbsp;Show only active courses</label>
+                                <label><input type="checkbox" [(ngModel)]="showActive" (change)="showActiveToggle(showActive)">&nbsp;&nbsp;Show only active courses</label>
                             </div>
                             <div *ngIf="cData.courses?.length > 0" class="col-4 text-center">
                                   <p><a *ngIf="page > 1" class="btn text-primary" (click)="changePage(page -1)"><i class="fas fa-backward"></i></a>Page {{ page }}<a *ngIf="itemsPerPage < cData.courses?.length && end < cData.courses?.length" class="btn text-primary" (click)="changePage(page + 1)"><i class="fas fa-forward"></i></a></p>
