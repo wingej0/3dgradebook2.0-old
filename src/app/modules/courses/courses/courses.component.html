@@ -1,6 +1,6 @@
 <app-header></app-header>
 
-<main>
+<main *ngIf="cData$ | async as cData">
     <!-- Standard page header - Title on left/add and import buttons on right -->
     <div class="row">
         <div class="col-6">
@@ -10,7 +10,7 @@
             <button type="button" class="btn btn-outline-primary add-button" data-toggle="modal" data-target="#courseFormModal" (click)="setForm()">
                 <i class="fas fa-plus-circle"></i> Add
             </button>
-            <a *ngIf="import == 'true'" href="/canvas-courses" type="button" class="btn btn-outline-warning add-button">
+            <a *ngIf="cData.user.import" href="/canvas-courses" type="button" class="btn btn-outline-warning add-button">
                 <i class="fas fa-file-import"></i> Import
             </a>
         </div>
@@ -20,13 +20,13 @@
         <table class="table table-striped">
             <thead>
                 <!-- Pagination and search row -->
-                <tr *ngIf="courses?.length > 5" class="table-active">
+                <tr class="table-active">
                     <td colspan="100%">
                         <!-- Inline style to stop the scrollbar on larger screens. -->
                         <div class="row" style="margin: auto; min-width: 1024px;">
                             <div class="col-4">
                                 <form class="form-inline">
-                                    <input type="number" id="itemsPerPage" class="form-control form-control-sm" style="width: 4em;" [value]="itemsPerPage" (change)="setItemsPerPage($event.target.valueAsNumber)">
+                                    <input type="number" id="itemsPerPage" class="form-control form-control-sm" style="width: 4em;" [value]="itemsPerPage" (change)="setItemsPerPage($event.target.valueAsNumber, cData.courses.length)">
                                     <label for="itemsPerPage">&nbsp; courses per page</label>
                                 </form>
                             </div>
@@ -39,16 +39,16 @@
                 </tr>
                 <!-- Sortable headers -->
                 <tr>
-                    <th style="width: 25%;"><a class="btn" (click)="setSortBy('name')">Course</a></th>
-                    <th style="width: 20%;"><a class="btn" (click)="setSortBy('section')">Section</a></th>
-                    <th style="width: 20%;"><a class="btn" (click)="setSortBy('numberOfStudents')">Students</a></th>
-                    <th style="width: 20%;"><a class="btn" (click)="setSortBy('standardsName')">Standards</a></th>
+                    <th style="width: 25%;"><a class="btn">Course</a></th>
+                    <th style="width: 20%;"><a class="btn">Section</a></th>
+                    <th style="width: 20%;"><a class="btn">Students</a></th>
+                    <th style="width: 20%;"><a class="btn">Standards</a></th>
                     <th style="width: 15%;">Actions</th>
                 </tr>
             </thead>
             <tbody>
                 <!-- Simple Bootstrap loader -->
-                <tr *ngIf="loader" class="loader">
+                <tr *ngIf="!cData" class="loader">
                     <td colspan="100%">
                         <div class="d-flex align-items-center">
                             <strong>Loading...</strong>
@@ -57,11 +57,11 @@
                     </td>
                 </tr>
                 <!-- Courses with pipes for filtering and pagination -->
-                <tr *ngFor="let course of courses | itemFilter:filterText | slice:start:end" [class.table-warning]="!course.active">
+                <tr *ngFor="let course of cData.courses | itemFilter:filterText | slice:start:end" [class.table-warning]="!course.active">
                     <td>{{ course.name }}</td>
                     <td>{{ course.section }}</td>
                     <td>{{ course.numberOfStudents }}</td>
-                    <td>{{ course.standardsName }}</td>
+                    <td>{{ course.standards }}</td>
                     <td>
                         <!-- Actions cell -->
                         <div *ngIf="course.active; else archived">
@@ -84,14 +84,14 @@
                         <!-- Inline style to stop the scrollbar on larger screens. -->
                         <div class="row" style="margin: auto; min-width: 1024px;">
                             <div class="col-4">
-                                <label><input type="checkbox" (change)="getCourses()" [(ngModel)]="showActive">&nbsp;&nbsp;Show only active courses</label>
+                                <label><input type="checkbox" [(ngModel)]="showActive">&nbsp;&nbsp;Show only active courses</label>
                             </div>
-                            <div *ngIf="courses?.length > 0" class="col-4 text-center">
-                                  <p><a *ngIf="page > 1" class="btn text-primary" (click)="changePage(page -1)"><i class="fas fa-backward"></i></a>Page {{ page }}<a *ngIf="itemsPerPage < courses?.length && end < courses?.length" class="btn text-primary" (click)="changePage(page + 1)"><i class="fas fa-forward"></i></a></p>
+                            <div *ngIf="cData.courses?.length > 0" class="col-4 text-center">
+                                  <p><a *ngIf="page > 1" class="btn text-primary" (click)="changePage(page -1)"><i class="fas fa-backward"></i></a>Page {{ page }}<a *ngIf="itemsPerPage < cData.courses?.length && end < cData.courses?.length" class="btn text-primary" (click)="changePage(page + 1)"><i class="fas fa-forward"></i></a></p>
                             </div>
-                            <div *ngIf="courses?.length > 0" class="col-4 text-right">
-                                <p *ngIf="end < courses?.length; else pageEnd">Showing courses {{ start + 1 | number }}-{{ end | number }} out of {{ courses?.length | number }}</p>
-                                <ng-template #pageEnd>Showing courses {{ start + 1 | number }}-{{ courses?.length | number }} out of {{ courses?.length | number }}</ng-template>
+                            <div *ngIf="cData.courses?.length > 0" class="col-4 text-right">
+                                <p *ngIf="end < cData.courses?.length; else pageEnd">Showing courses {{ start + 1 | number }}-{{ end | number }} out of {{ cData.courses?.length | number }}</p>
+                                <ng-template #pageEnd>Showing courses {{ start + 1 | number }}-{{ cData.courses?.length | number }} out of {{ cData.courses?.length | number }}</ng-template>
                             </div>     
                         </div>
                     </td>
@@ -99,11 +99,8 @@
             </tfoot>
         </table>
     </div>
-</main>
 
-<app-footer></app-footer>
-
-<!-- Modal form for adding and updating courses -->
+    <!-- Modal form for adding and updating courses -->
 <div class="modal fade" id="courseFormModal" tabindex="-1" role="dialog" aria-labelledby="courseFormModal" aria-hidden="true">
     <form [formGroup]="courseForm">
         <div class="modal-dialog" role="document">
@@ -126,7 +123,7 @@
                 <div class="form-group">
                     <label for="id_course_standards">Standards:</label>
                     <select name="course_standards" class="form-control" id="id_course_standards" formControlName="standardsID">
-                        <option *ngFor="let standard of standards" [ngValue]="standard.id">
+                        <option *ngFor="let standard of cData.standards" [ngValue]="standard.id">
                             {{ standard.name }}
                         </option>
                     </select>
@@ -145,3 +142,6 @@
           </div>
     </form>
   </div>
+</main>
+
+<app-footer></app-footer>

@@ -32,7 +32,7 @@
                                 <form>
                                     <select name="standards-groups" class="form-control form-control-sm" id="id_standards_groups" [(ngModel)]="activeGroup">
                                         <option selected disabled [ngValue]="undefined">Select a Standards Group</option>
-                                        <option *ngFor="let group of standardsGroups" [ngValue]="group.id">
+                                        <option *ngFor="let group of standardsGroups$ | async" [ngValue]="group.id">
                                             {{ group.name }}
                                         </option>
                                     </select>

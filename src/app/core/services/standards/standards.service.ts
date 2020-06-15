@@ -10,23 +10,20 @@ import { convertSnaps } from '../db-utils';
   providedIn: 'root'
 })
 export class StandardsService {
+  standardsGroups$ : Observable<StandardsGroup[]> = this.auth.user$
+    .pipe(concatMap(user => {
+      return this.db.list(`${user.uid}/standards`,
+        ref => ref.orderByChild('name'))
+        .snapshotChanges()
+        .pipe(map(snaps => 
+          convertSnaps<StandardsGroup>(snaps))
+        );
+    }))  
 
   constructor(
     private db : AngularFireDatabase,
     private auth : AuthService
   ) { }
-
-  getStandardsGroups() : Observable<StandardsGroup[]> {
-    return this.auth.user$
-      .pipe(concatMap(user => {
-        return this.db.list(`${user.uid}/standards`,
-          ref => ref.orderByChild('name'))
-          .snapshotChanges()
-          .pipe(map(snaps => 
-            convertSnaps<StandardsGroup>(snaps))
-          );
-      }))  
-  }
 
   createStandardsGroup(group : Partial<StandardsGroup>) : Observable<any> {
     return this.auth.user$

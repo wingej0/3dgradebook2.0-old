@@ -5,6 +5,9 @@ import { Course } from 'src/app/core/models/course';
 import { SubSink } from 'subsink';
 import { StandardsGroup } from 'src/app/core/models/standards-group';
 import { StandardsService } from 'src/app/core/services/standards/standards.service';
+import { Observable, combineLatest } from 'rxjs';
+import { AuthService } from 'src/app/core/services/auth/auth.service';
+import { map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-courses',
@@ -12,6 +15,14 @@ import { StandardsService } from 'src/app/core/services/standards/standards.serv
   styleUrls: ['./courses.component.css']
 })
 export class CoursesComponent implements OnInit, OnDestroy {
+  courses$ : Observable<Course[]> = this.coursesService.displayedCourses$;
+  cData$ = combineLatest([
+      this.auth.user$,
+      this.courses$,
+      this.standardsService.standardsGroups$
+    ]).pipe(map(([user, courses, standards]) => 
+      ({user, courses, standards})));
+
   private subs = new SubSink();
   
   // Properties for ngIf statements and filtering
@@ -24,10 +35,6 @@ export class CoursesComponent implements OnInit, OnDestroy {
   // Form properties
   formTitle : string;
   courseForm;
-
-  // Async data
-  courses : Course[];
-  standards : StandardsGroup[];
   
   // Properties for pagination
   itemsPerPage : number = 5;
@@ -36,15 +43,14 @@ export class CoursesComponent implements OnInit, OnDestroy {
   page : number = 1;
 
   constructor(
+    private auth : AuthService,
     private coursesService : CoursesService,
     private standardsService : StandardsService,
     private fb : FormBuilder,
   ) { }
 
   ngOnInit(): void {
-    this.getCourses();
     this.setForm();
-    this.getStandards();
   }
 
   ngOnDestroy(): void {
@@ -72,43 +78,10 @@ export class CoursesComponent implements OnInit, OnDestroy {
     }
   }
 
-  getCourses() {
-    this.subs.add(
-      this.coursesService.getCourses(this.sortBy)
-      .subscribe(courses => {
-        if (this.showActive) {
-          this.courses = courses.filter(course => course.active);
-          this.loader = false;
-        } else {
-          this.courses = courses;
-          this.loader = false;
-        }
-      },
-      error => {
-        alert(error.message);
-      })
-    )
-  }
-
-  getStandards() {
-    this.subs.add(
-      this.standardsService.getStandardsGroups()
-        .subscribe(standards => {
-          this.standards = standards;
-        })
-    )
-  }
-
   updateCourse() {
     if (this.courseForm.value.id) {
       let id = this.courseForm.value.id;
       let updatedCourse = this.courseForm.value;
-      // Add standardsName to object before saving
-      if (this.courseForm.value.standardsID) {
-        let newStandardsID = this.courseForm.value.standardsID;
-        let newStandardsName = this.standards.find(standards => standards.id == newStandardsID).name;
-        updatedCourse.standardsName = newStandardsName;
-      };
       // Delete the id field from the object before saving
       delete updatedCourse.id;
       this.subs.add(
@@ -122,12 +95,6 @@ export class CoursesComponent implements OnInit, OnDestroy {
       )
     } else {
       let newCourse = this.courseForm.value;
-      // Add standardsName to object before saving
-      if (this.courseForm.value.standardsID) {
-        let newStandardsID = this.courseForm.value.standardsID;
-        let newStandardsName = this.standards.find(standards => standards.id == newStandardsID).name;
-        newCourse.standardsName = newStandardsName;
-      };
       this.subs.add(
         this.coursesService.createCourse(newCourse)
         .subscribe(() => {
@@ -171,20 +138,15 @@ export class CoursesComponent implements OnInit, OnDestroy {
     )
   }
 
-  setSortBy(sortHeader : string) {
-    this.sortBy = sortHeader;
-    this.getCourses();
-  }
-
   // Pagination
-  setItemsPerPage(itemsPerPage : number) {
+  setItemsPerPage(itemsPerPage : number, coursesLength) {
     if (!isNaN(itemsPerPage)) {
       this.itemsPerPage = itemsPerPage;
       this.end = this.start + this.itemsPerPage;
-      if (itemsPerPage < this.courses.length && this.courses.length > ((this.page -1) * itemsPerPage)) {
+      if (itemsPerPage < coursesLength && coursesLength > ((this.page -1) * itemsPerPage)) {
         this.changePage(this.page);
       } else {
-        this.changePage(Math.ceil(this.courses.length / itemsPerPage));
+        this.changePage(Math.ceil(coursesLength / itemsPerPage));
       }
     } else {
       this.itemsPerPage = this.itemsPerPage;

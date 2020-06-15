@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
+import { auth } from 'firebase';
 
 @Component({
   selector: 'app-header',
@@ -7,6 +8,7 @@ import { AuthService } from 'src/app/core/services/auth/auth.service';
   styleUrls: ['./header.component.css']
 })
 export class HeaderComponent implements OnInit {
+  public user$ = this.auth.user$;
 
   constructor(
     public auth : AuthService

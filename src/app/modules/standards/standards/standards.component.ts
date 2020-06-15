@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { StandardsService } from 'src/app/core/services/standards/standards.service';
 import { StandardsGroup } from 'src/app/core/models/standards-group';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-standards',
@@ -8,7 +9,7 @@ import { StandardsGroup } from 'src/app/core/models/standards-group';
   styleUrls: ['./standards.component.css']
 })
 export class StandardsComponent implements OnInit {
-  standardsGroups : StandardsGroup[];
+  standardsGroups$ : Observable<StandardsGroup[]> = this.standardsService.standardsGroups$;
   activeGroup;
 
   constructor(
@@ -16,14 +17,6 @@ export class StandardsComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.getStandardsGroups();
+    
   }
-
-  getStandardsGroups() {
-    this.standardsService.getStandardsGroups()
-      .subscribe(groups => {
-        this.standardsGroups = groups;
-      })
-  }
-
 }

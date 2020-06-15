@@ -5,7 +5,7 @@ export interface Course {
     numberOfStudents: number,
     active: boolean,
     standardsID?: string,
-    standardsName?: string,
+    standards?: string,
     courseID?: number,
     sectionID?: number,
 }

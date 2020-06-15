@@ -15,14 +15,7 @@ import { User } from '../../models/user';
   providedIn: 'root'
 })
 export class AuthService {
-  user$ : Observable<User>;
-
-  constructor(
-    private afAuth : AngularFireAuth,
-    private db : AngularFireDatabase,
-    private router : Router
-  ) {
-    this.user$ = this.afAuth.authState
+  user$ : Observable<User> = this.afAuth.authState
       .pipe(switchMap(user => {
         if (user) {
           return this.db.object(`${user.uid}/user`).valueChanges();
@@ -30,7 +23,12 @@ export class AuthService {
           return of(null);
         }
       }));
-   }
+
+  constructor(
+    private afAuth : AngularFireAuth,
+    private db : AngularFireDatabase,
+    private router : Router
+  ) { }
 
    async googleSignIn() {
     const provider = new auth.GoogleAuthProvider();

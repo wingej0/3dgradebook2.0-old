@@ -24,7 +24,7 @@ export class CanvasCoursesComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit(): void {
-    this.getCourses();
+    // this.getCourses();
     this.getCanvasCourses();
   }
 
@@ -46,14 +46,14 @@ export class CanvasCoursesComponent implements OnInit, OnDestroy {
     )
   }
 
-  getCourses() {
-    this.subs.add(
-      this.coursesService.getCourses("section")
-      .subscribe(courses => {
-        this.courses = courses;
-      })
-    )
-  }
+  // getCourses() {
+  //   this.subs.add(
+  //     this.coursesService.getCourses("section")
+  //     .subscribe(courses => {
+  //       this.courses = courses;
+  //     })
+  //   )
+  // }
 
   getSections(courseID) {
     this.subs.add(
