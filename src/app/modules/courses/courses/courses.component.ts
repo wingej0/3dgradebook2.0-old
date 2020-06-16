@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
 import { CoursesService } from 'src/app/core/services/courses/courses.service';
 import { FormBuilder, Validators } from '@angular/forms';
 import { Course } from 'src/app/core/models/course';
@@ -11,9 +11,11 @@ import { map } from 'rxjs/operators';
 @Component({
   selector: 'app-courses',
   templateUrl: './courses.component.html',
-  styleUrls: ['./courses.component.css']
+  styleUrls: ['./courses.component.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CoursesComponent implements OnInit, OnDestroy {
+  // Async Data Sources
   courses$ : Observable<Course[]> = this.coursesService.displayedCourses$;
   cData$ = combineLatest([
       this.auth.user$,
@@ -121,6 +123,10 @@ export class CoursesComponent implements OnInit, OnDestroy {
     }
   }
 
+  showActiveToggle(showActive) {
+    this.coursesService.showActiveToggle(showActive);
+  }
+  
   archiveToggle(course) {
     let id = course.id;
     let active = {
@@ -156,9 +162,5 @@ export class CoursesComponent implements OnInit, OnDestroy {
     this.page = page;
     this.start = ((page -1) * this.itemsPerPage);
     this.end = (this.start + this.itemsPerPage);
-  }
-
-  showActiveToggle(showActive) {
-    this.coursesService.showActiveToggle(showActive);
   }
 }

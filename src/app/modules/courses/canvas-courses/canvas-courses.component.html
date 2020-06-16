@@ -1,12 +1,12 @@
 <app-header></app-header>
 
-<main>
+<main *ngIf="canvasCourses$ | async as canvasCourses">
     <div class="row">
-        <div class="col-10">
+        <div class="col-6">
             <h1>Import Courses from Canvas</h1>
         </div>
-        <div class="col-2 text-right">
-            <button type="button" class="btn btn-outline-warning add-button" (click)="importAll()">
+        <div class="col-6 text-right">
+            <button type="button" class="btn btn-outline-warning add-button" (click)="importAll(canvasCourses)">
                 <i class="fas fa-file-import"></i> Import All
             </button>
         </div>
@@ -22,14 +22,6 @@
                 </tr>
             </thead>
             <tbody>
-                <tr *ngIf="loader" class="loader">
-                    <td colspan="100%">
-                        <div class="d-flex align-items-center">
-                            <strong>Loading...</strong>
-                            <div class="spinner-border ml-auto" role="status" aria-hidden="true"></div>
-                        </div>
-                    </td>
-                </tr>
                 <tr *ngFor="let course of canvasCourses">
                     <td>{{ course.id }}</td>
                     <td>{{ course.name }}</td>
@@ -43,6 +35,13 @@
                     </td>
                 </tr>
             </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="100%">
+                        <a href="/courses"><i class="fas fa-step-backward"></i> Back to Courses</a>
+                    </td>
+                </tr>
+            </tfoot>
         </table>
     </div>
 </main>

@@ -12,7 +12,7 @@ import { StudentsService } from '../students/students.service';
   providedIn: 'root'
 })
 export class CoursesService {
-  courses$ : Observable<Course[]> = this.auth.user$
+  public courses$ : Observable<Course[]> = this.auth.user$
     .pipe(concatMap(user => {
     return this.db.list(`${user.uid}/courses`,
       ref => ref.orderByChild('section'))
@@ -22,29 +22,36 @@ export class CoursesService {
     }));
   
   private activeCoursesAction = new BehaviorSubject<boolean>(true);
-  activeCoursesAction$ = this.activeCoursesAction.asObservable();
+  public activeCoursesAction$ = this.activeCoursesAction.asObservable();
   
-  displayedCourses$ : Observable<Course[]> = combineLatest(
-    [this.courses$,
-    this.standardsService.standardsGroups$,
-    this.studentsService.students$,
-    this.activeCoursesAction$
-  ]
-  ).pipe(map(([courses, standards, students, active]) => {
-    if (active) {
-      courses = courses.filter(course => course.active);
-    } else {
-      courses = courses;
-    }
-    return courses.map(
-      c => (
-        {...c,
-          standards : standards.find(s => s.id == c.standardsID) ? standards.find(s => s.id == c.standardsID).name : "",
-          numberOfStudents : students.filter(st => st.courses.includes(c.id)).length,
-        }
+  public displayedCourses$ : Observable<Course[]> = combineLatest(
+      [this.courses$,
+      this.standardsService.standardsGroups$,
+      this.studentsService.students$,
+      this.activeCoursesAction$
+    ]
+    ).pipe(map(([courses, standards, students, active]) => {
+      if (active) {
+        courses = courses.filter(course => course.active);
+      }
+      return courses.map(
+        c => (
+          {...c,
+            standards : standards.find(s => s.id == c.standardsID) ? standards.find(s => s.id == c.standardsID).name : "",
+            numberOfStudents : students.filter(st => st.courses.includes(c.id)).length,
+          }
+        ) as Course
       )
-    )
-  }))  
+    }))
+  
+  public importedCourses$ : Observable<number[]>= this.courses$.pipe(map(c => {
+    let importedCourses = [];
+    let courses = c.filter(course => course.courseID);
+    for (let course of courses) {
+      importedCourses.push(course.courseID);
+    }
+    return importedCourses;
+  }))
   
   constructor(
     private db : AngularFireDatabase,
@@ -53,22 +60,21 @@ export class CoursesService {
     private studentsService : StudentsService
   ) { }
 
-  showActiveToggle(showActive) {
+  public showActiveToggle(showActive) {
     this.activeCoursesAction.next(showActive);
   } 
 
   // Create new course
-  createCourse(course: Course) : Observable<any> {
+  public createCourse(course: Course) : Observable<any> {
     return this.auth.user$
       .pipe(concatMap(user => {
-        course.numberOfStudents = 0;
         let courseRef = this.db.list(`${user.uid}/courses`);
         return from(courseRef.push(course));
       }));
   }
 
   // Update course
-  updateCourse(course: Partial<Course>, id: string) : Observable<any> {
+  public updateCourse(course: Partial<Course>, id: string) : Observable<any> {
     return this.auth.user$
       .pipe(concatMap(user => {
         let courseRef = this.db.object(`${user.uid}/courses/${id}`);
@@ -77,7 +83,7 @@ export class CoursesService {
   }
 
   // Delete course
-  deleteCourse(course: Course) : Observable<any> {
+  public deleteCourse(course: Course) : Observable<any> {
     return this.auth.user$
       .pipe(concatMap(user => {
         let courseRef = this.db.object(`${user.uid}/courses/${course.id}`);
