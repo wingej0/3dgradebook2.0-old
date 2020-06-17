@@ -45,11 +45,8 @@ export class CoursesService {
     }))
   
   public importedCourses$ : Observable<number[]>= this.courses$.pipe(map(c => {
-    let importedCourses = [];
     let courses = c.filter(course => course.courseID);
-    for (let course of courses) {
-      importedCourses.push(course.courseID);
-    }
+    let importedCourses = courses.map(course => course.courseID);
     return importedCourses;
   }))
   

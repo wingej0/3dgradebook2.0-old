@@ -18,7 +18,7 @@ export class CanvasCoursesService {
       return this.http.get<CanvasCourse[]>('https://cors-anywhere.herokuapp.com/' + domain + '/api/v1/courses?enrollment_type=teacher&enrollment_state=active', { headers })
     }));
   
-    private removeCourseAction = new BehaviorSubject<number>(null);
+    private removeCourseAction = new BehaviorSubject<number[]>([]);
     public removeCourseAction$ = this.removeCourseAction.asObservable();
     
     public displayedCanvasCourses$ = combineLatest(
@@ -26,11 +26,7 @@ export class CanvasCoursesService {
           this.coursesService.importedCourses$,
           this.removeCourseAction$]
       ).pipe(map(([canvasCourses, courses, remove]) => {
-        canvasCourses = canvasCourses.filter(c => !courses.includes(c.id));
-        let toDelete = canvasCourses.findIndex(c => c.id == remove);
-        if (toDelete != -1) {
-          canvasCourses.splice(toDelete, 1);
-        }
+        canvasCourses = canvasCourses.filter(c => !courses.includes(c.id) && !remove.includes(c.id));
         return canvasCourses;
       }))
   
@@ -41,7 +37,9 @@ export class CanvasCoursesService {
   ) { }
 
   removeCourse(id) {
-    this.removeCourseAction.next(id);
+    let removed = this.removeCourseAction.value;
+    removed.push(id);
+    this.removeCourseAction.next(removed);
   }
 
   getSections(courseID) : Observable<any> {
