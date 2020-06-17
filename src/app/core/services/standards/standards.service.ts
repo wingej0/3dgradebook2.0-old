@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { AngularFireDatabase } from '@angular/fire/database';
 import { AuthService } from '../auth/auth.service';
-import { Observable, from } from 'rxjs';
+import { Observable, from, BehaviorSubject, combineLatest } from 'rxjs';
 import { StandardsGroup } from '../../models/standards-group';
 import { concatMap, map } from 'rxjs/operators';
 import { convertSnaps } from '../db-utils';
@@ -18,7 +18,21 @@ export class StandardsService {
         .pipe(map(snaps => 
           convertSnaps<StandardsGroup>(snaps))
         );
-    }))  
+    }));
+
+  public activeGroupAction = new BehaviorSubject<string>("");
+  private activeGroupAction$ = this.activeGroupAction.asObservable();
+
+  displayedStandardsGroups$ = combineLatest(
+    [this.standardsGroups$,
+    this.activeGroupAction$]
+  ).pipe(map(([groups, activeID]) => {
+    let active;
+    if (activeID.length > 0) {
+      active = groups.find(g => g.id == activeID);
+    };
+    return ({groups, active})
+  }));
 
   constructor(
     private db : AngularFireDatabase,

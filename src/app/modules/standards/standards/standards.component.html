@@ -1,6 +1,6 @@
 <app-header></app-header>
 
-<main>
+<main *ngIf="standardsGroups$ | async as groups">
     <!-- Standard page header - Title on left/add and import buttons on right -->
     <div class="row">
         <div class="col-6">
@@ -29,18 +29,16 @@
                                 </form>
                             </div>
                             <div class="col-3 mr-0 pr-0">
-                                <form>
-                                    <select name="standards-groups" class="form-control form-control-sm" id="id_standards_groups" [(ngModel)]="activeGroup">
-                                        <option selected disabled [ngValue]="undefined">Select a Standards Group</option>
-                                        <option *ngFor="let group of standardsGroups$ | async" [ngValue]="group.id">
-                                            {{ group.name }}
-                                        </option>
-                                    </select>
-                                </form>  
+                                <select name="standards-groups" class="form-control form-control-sm" id="id_standards_groups" (change)="setActive($event.target.value)" #active>
+                                    <option selected disabled [value]="undefined">Select a Standards Group</option>
+                                    <option *ngFor="let group of groups.groups" [value]="group.id" [selected]="(groups.active) ? group.id == groups.active.id : undefined">
+                                        {{ group.name }}
+                                    </option>
+                                </select>
                             </div>
                             <div class="col-2">
-                                <a class="btn text-primary select-btn"><i class="fas fa-plus-circle"></i></a>&nbsp;
-                                <a class="btn text-warning select-btn"><i class="fas fa-edit"></i></a>&nbsp;
+                                <a class="btn text-primary select-btn" data-toggle="modal" data-target="#standardsGroupFormModal" (click)="setStandardsGroupForm()"><i class="fas fa-plus-circle"></i></a>&nbsp;
+                                <a class="btn text-warning select-btn" data-toggle="modal" data-target="#standardsGroupFormModal" (click)="setStandardsGroupForm(groups.active)"><i class="fas fa-edit"></i></a>&nbsp;
                                 <a class="btn text-danger select-btn"><i class="fas fa-trash-alt"></i></a>
                             </div>
                             <div class="col-3 text-right">
@@ -59,6 +57,40 @@
                 </tr>
             </thead>
         </table>
+    </div>
+    <!-- Standards Group Form Modal -->
+    <div class="modal fade" id="standardsGroupFormModal" tabindex="-1" role="dialog" aria-labelledby="standardsGroupFormModal" aria-hidden="true">
+        <form [formGroup]="groupForm">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3 class="modal-title" id="groupForm">{{ groupFormTitle }}</h3>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                          <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label for="id_group_name">Name:</label>
+                            <input type="text" name="group_name" id="id_group_name"  class="form-control" formControlName="name" required />
+                        </div>
+                        <div class="form-group">
+                            <label for="id_categories">Add a Category:</label>
+                            <input type="text" name="categories" id="id_categories" class="form-control" (keyup.enter)="addCategory(category)" #category>
+                        </div>
+                        <div class="form-group">
+                            <ul *ngFor="let category of categories.controls" class="list-group">
+                                <li class="list-group-item">{{ category.value }}</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary" data-dismiss="modal" (click)="updateGroup()" [disabled]="!groupForm.dirty || !groupForm.valid">Save Changes</button>
+                    </div>
+                </div>
+            </div>
+        </form>
     </div>
 </main>
 
