@@ -29,17 +29,17 @@
                                 </form>
                             </div>
                             <div class="col-3 mr-0 pr-0">
-                                <select name="standards-groups" class="form-control form-control-sm" id="id_standards_groups" (change)="setActive($event.target.value)" #active>
-                                    <option selected disabled [value]="undefined">Select a Standards Group</option>
+                                <select name="standards-groups" class="form-control form-control-sm" id="id_standards_groups" (change)="setActive($event.target.value)">
+                                    <option selected [value]="undefined">Select a Standards Group</option>
                                     <option *ngFor="let group of groups.groups" [value]="group.id" [selected]="(groups.active) ? group.id == groups.active.id : undefined">
                                         {{ group.name }}
                                     </option>
                                 </select>
                             </div>
                             <div class="col-2">
-                                <a class="btn text-primary select-btn" data-toggle="modal" data-target="#standardsGroupFormModal" (click)="setStandardsGroupForm()"><i class="fas fa-plus-circle"></i></a>&nbsp;
-                                <a class="btn text-warning select-btn" data-toggle="modal" data-target="#standardsGroupFormModal" (click)="setStandardsGroupForm(groups.active)"><i class="fas fa-edit"></i></a>&nbsp;
-                                <a class="btn text-danger select-btn"><i class="fas fa-trash-alt"></i></a>
+                                <a class="btn text-primary select-btn" data-toggle="modal" data-target="#standardsGroupFormModal" (click)="setStandardsGroupForm()"><i class="fas fa-plus-circle" data-toggle="tooltip" title="Create New Standards Group"></i></a>&nbsp;
+                                <a *ngIf="groups.active" class="btn text-warning select-btn" data-toggle="modal" data-target="#standardsGroupFormModal" (click)="setStandardsGroupForm(groups.active)"><i class="fas fa-edit" data-toggle="tooltip" title="Edit {{ groups.active.name }}"></i></a>&nbsp;
+                                <a *ngIf="groups.active" class="btn text-danger select-btn" (click)="deleteGroup(groups.active)"><i class="fas fa-trash-alt" data-toggle="tooltip" title="Delete {{ groups.active.name }}"></i></a>
                             </div>
                             <div class="col-3 text-right">
                                 <input type="text" class="form-control form-control-sm" placeholder="Search Standards">

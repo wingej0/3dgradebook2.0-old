@@ -28,9 +28,7 @@ export class StandardsService {
     this.activeGroupAction$]
   ).pipe(map(([groups, activeID]) => {
     let active;
-    if (activeID.length > 0) {
-      active = groups.find(g => g.id == activeID);
-    };
+    activeID ? active = groups.find(g => g.id == activeID) : null;
     return ({groups, active})
   }));
 

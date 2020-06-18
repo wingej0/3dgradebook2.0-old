@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { StandardsService } from 'src/app/core/services/standards/standards.service';
 import { StandardsGroup } from 'src/app/core/models/standards-group';
 import { FormBuilder, Validators, FormControl, FormArray } from '@angular/forms';
+import { error } from 'console';
 
 @Component({
   selector: 'app-standards',
@@ -10,7 +11,6 @@ import { FormBuilder, Validators, FormControl, FormArray } from '@angular/forms'
 })
 export class StandardsComponent implements OnInit {
   standardsGroups$ = this.standardsService.displayedStandardsGroups$;
-  activeGroup;
   groupFormTitle;
   groupForm;
 
@@ -21,9 +21,6 @@ export class StandardsComponent implements OnInit {
 
   ngOnInit(): void {
     this.setStandardsGroupForm();
-    this.activeGroup = this.fb.group({
-      active : [{}],
-    })
   }
 
   setStandardsGroupForm(group? : StandardsGroup) {
@@ -43,19 +40,41 @@ export class StandardsComponent implements OnInit {
     }
   }
 
+  get categories() {
+    return this.groupForm.get('categories') as FormArray;
+  }
+
   addCategory(category : HTMLInputElement) {
     this.categories.push(new FormControl(category.value));
     category.value = '';
   }
 
-  get categories() {
-    return this.groupForm.get('categories') as FormArray;
-  }
-
   updateGroup() {
     let newGroup = this.groupForm.value;
-    this.standardsService.createStandardsGroup(newGroup).subscribe(ref => this.standardsService.activeGroupAction.next(ref.key));
+    if (newGroup.id) {
+      let id = newGroup.id;
+      delete newGroup.id;
+      return this.standardsService.updateStandardsGroup(newGroup, id)
+          .subscribe();
+    } else {
+      return this.standardsService.createStandardsGroup(newGroup)
+          .subscribe(ref => this.standardsService.activeGroupAction.next(ref.key));
+    }
   }
+
+  deleteGroup(group) {
+    let result = confirm("Are you sure you want to delete '" + group.name + "'?");
+    if (result) {
+      return this.standardsService.deleteStandardsGroup(group)
+        .subscribe(() => {
+          this.standardsService.activeGroupAction.next('');
+          return;
+        },
+        error => {
+          alert(error.message);
+        }) 
+    }
+  } 
 
   setActive(id) {
     this.standardsService.activeGroupAction.next(id);
