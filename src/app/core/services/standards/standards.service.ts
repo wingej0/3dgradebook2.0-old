@@ -5,6 +5,7 @@ import { Observable, from, BehaviorSubject, combineLatest } from 'rxjs';
 import { StandardsGroup } from '../../models/standards-group';
 import { concatMap, map } from 'rxjs/operators';
 import { convertSnaps } from '../db-utils';
+import { Standard } from '../../models/standard';
 
 @Injectable({
   providedIn: 'root'
@@ -12,11 +13,21 @@ import { convertSnaps } from '../db-utils';
 export class StandardsService {
   standardsGroups$ : Observable<StandardsGroup[]> = this.auth.user$
     .pipe(concatMap(user => {
-      return this.db.list(`${user.uid}/standards`,
+      return this.db.list(`${user.uid}/standardsGroups`,
         ref => ref.orderByChild('name'))
         .snapshotChanges()
         .pipe(map(snaps => 
           convertSnaps<StandardsGroup>(snaps))
+        );
+    }));
+  
+  standards$ : Observable<Standard[]> = this.auth.user$
+    .pipe(concatMap(user => {
+      return this.db.list(`${user.uid}/standards`,
+        ref => ref.orderByChild('name'))
+        .snapshotChanges()
+        .pipe(map(snaps => 
+          convertSnaps<Standard>(snaps))
         );
     }));
 
@@ -25,11 +36,13 @@ export class StandardsService {
 
   displayedStandardsGroups$ = combineLatest(
     [this.standardsGroups$,
-    this.activeGroupAction$]
-  ).pipe(map(([groups, activeID]) => {
+    this.activeGroupAction$,
+    this.standards$]
+  ).pipe(map(([groups, activeID, standards]) => {
     let active;
     activeID ? active = groups.find(g => g.id == activeID) : null;
-    return ({groups, active})
+    activeID ? standards = standards.filter(s => s.group == activeID) : standards = null;
+    return ({groups, active, standards})
   }));
 
   constructor(
@@ -40,7 +53,7 @@ export class StandardsService {
   createStandardsGroup(group : Partial<StandardsGroup>) : Observable<any> {
     return this.auth.user$
       .pipe(concatMap(user => {
-        let standardsGroupRef = this.db.list(`${user.uid}/standards`);
+        let standardsGroupRef = this.db.list(`${user.uid}/standardsGroups`);
         return from(standardsGroupRef.push(group));
       }));
   }
@@ -48,7 +61,7 @@ export class StandardsService {
   updateStandardsGroup(group: Partial<StandardsGroup>, id: string) : Observable<any> {
     return this.auth.user$
       .pipe(concatMap(user => {
-        let standardsGroupRef = this.db.object(`${user.uid}/standards/${id}`);
+        let standardsGroupRef = this.db.object(`${user.uid}/standardsGroups/${id}`);
         return from(standardsGroupRef.update(group));
       }));
   }
@@ -56,8 +69,16 @@ export class StandardsService {
   deleteStandardsGroup(group: StandardsGroup) : Observable<any> {
     return this.auth.user$
       .pipe(concatMap(user => {
-        let standardsGroupRef = this.db.object(`${user.uid}/standards/${group.id}`);
+        let standardsGroupRef = this.db.object(`${user.uid}/standardsGroups/${group.id}`);
         return from(standardsGroupRef.remove());
+      }));
+  }
+
+  createStandard(standard : Partial<Standard>) : Observable<any> {
+    return this.auth.user$
+      .pipe(concatMap(user => {
+        let standardsRef = this.db.list(`${user.uid}/standards`);
+        return from(standardsRef.push(standard));
       }));
   }
 }

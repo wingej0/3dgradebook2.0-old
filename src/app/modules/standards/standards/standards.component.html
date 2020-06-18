@@ -7,7 +7,7 @@
             <h1>Standards</h1>
         </div>
         <div class="col-6 text-right">
-            <button type="button" class="btn btn-outline-primary add-button" data-toggle="modal" data-target="#courseFormModal">
+            <button type="button" class="btn btn-outline-primary add-button" data-toggle="modal" data-target="#standardsFormModal" (click)="setStandardsForm()">
                 <i class="fas fa-plus-circle"></i> Add
             </button>
             <a href="/canvas-courses" type="button" class="btn btn-outline-warning add-button">
@@ -56,6 +56,15 @@
                     <th style="width: 15%;"><a class="btn">Actions</a></th>
                 </tr>
             </thead>
+            <tbody>
+                <tr *ngFor="let standard of groups.standards">
+                    <td>{{ standard.essential }}</td>
+                    <td>{{ standard.category }}</td>
+                    <td>{{ standard.name }}</td>
+                    <td>{{ standard.description }}</td>
+                    <td>Actions</td>
+                </tr>
+            </tbody>
         </table>
     </div>
     <!-- Standards Group Form Modal -->
@@ -79,19 +88,62 @@
                             <input type="text" name="categories" id="id_categories" class="form-control" (keyup.enter)="addCategory(category)" #category>
                         </div>
                         <div class="form-group">
-                            <ul *ngFor="let category of categories.controls" class="list-group">
-                                <li class="list-group-item">{{ category.value }}</li>
+                            <ul *ngFor="let category of categories.controls; let i = index" class="list-group">
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    <input type="number" min="1" max="{{ categories.length }}" class="form-control" value="{{ i + 1 }}" style="width: 20%;" (change)="moveCategories(i, $event.target.valueAsNumber)">
+                                    <input type="text" class="form-control" value="{{ category.value }}" style="margin-left: 1em; width: 70%;" (change)="editCategories(i, $event.target.value)">
+                                    <span class="text-right" style="width: 10%;"><a class="btn text-danger select-btn"><i class="fas fa-trash-alt" data-toggle="tooltip" title="Delete {{ category.value }}" (click)="deleteCategories(i)"></i></a></span>
+                                </li>
                             </ul>
                         </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                        <button type="button" class="btn btn-primary" data-dismiss="modal" (click)="updateGroup()" [disabled]="!groupForm.dirty || !groupForm.valid">Save Changes</button>
+                        <button type="button" class="btn btn-primary" data-dismiss="modal" (click)="updateGroup()" [disabled]="!groupForm.valid">Save Changes</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+    <!-- Standards Form Modal -->
+    <div class="modal fade" id="standardsFormModal" tabindex="-1" role="dialog" aria-labelledby="standardsFormModal" aria-hidden="true">
+        <form [formGroup]="standardsForm">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3 class="modal-title" id="standardsForm">{{ standardsFormTitle }}</h3>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                          <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label for="id_category">Category:</label>
+                            <select name="category" id="id_category" class="form-control" formControlName="category">
+                                <option *ngFor="let category of groups.active?.categories" value="{{ category }}">{{ category }}</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="id_standard_name">Name:</label>
+                            <input type="text" name="standard_name" id="id_standard_name" class="form-control" formControlName="name" required />
+                        </div>
+                        <div class="form-group">
+                            <label for="id_standard_description">Description:</label>
+                            <textarea name="standard_description" id="id_standard_description" class="form-control" formControlName="description" required></textarea>
+                        </div>
+                        <div class="form-check row">
+                            <div class="checkbox col-sm-12 text-right">
+                                <label><input type="checkbox" formControlName="essential">&nbsp;&nbsp;Essential</label>
+                            </div>
+                        </div>  
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary" data-dismiss="modal" (click)="updateStandard(groups.active.id)" [disabled]="!standardsForm.dirty || !standardsForm.valid">Save Changes</button>
                     </div>
                 </div>
             </div>
         </form>
     </div>
 </main>
-
 <app-footer></app-footer>

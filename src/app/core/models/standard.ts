@@ -3,5 +3,6 @@ export interface Standard {
     name : string,
     category : string,
     description : string,
-    essential : boolean
+    essential : boolean,
+    group : string,
 }

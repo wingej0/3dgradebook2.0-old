@@ -3,6 +3,7 @@ import { StandardsService } from 'src/app/core/services/standards/standards.serv
 import { StandardsGroup } from 'src/app/core/models/standards-group';
 import { FormBuilder, Validators, FormControl, FormArray } from '@angular/forms';
 import { error } from 'console';
+import { Standard } from 'src/app/core/models/standard';
 
 @Component({
   selector: 'app-standards',
@@ -13,6 +14,8 @@ export class StandardsComponent implements OnInit {
   standardsGroups$ = this.standardsService.displayedStandardsGroups$;
   groupFormTitle;
   groupForm;
+  standardsFormTitle;
+  standardsForm;
 
   constructor(
     private standardsService : StandardsService,
@@ -21,6 +24,7 @@ export class StandardsComponent implements OnInit {
 
   ngOnInit(): void {
     this.setStandardsGroupForm();
+    this.setStandardsForm();
   }
 
   setStandardsGroupForm(group? : StandardsGroup) {
@@ -40,6 +44,16 @@ export class StandardsComponent implements OnInit {
     }
   }
 
+  setStandardsForm(standard? : Standard) {
+    this.standardsFormTitle = "Add a Standard";
+    this.standardsForm = this.fb.group({
+      category : ['', Validators.required],
+      name : ['', Validators.required],
+      description : ['', Validators.required],
+      essential : [false]
+    })
+  }
+
   get categories() {
     return this.groupForm.get('categories') as FormArray;
   }
@@ -47,6 +61,21 @@ export class StandardsComponent implements OnInit {
   addCategory(category : HTMLInputElement) {
     this.categories.push(new FormControl(category.value));
     category.value = '';
+  }
+
+  moveCategories(o, n) {
+    let category = this.categories.at(o);
+    this.categories.removeAt(o);
+    this.categories.insert(n-1, category);
+  }
+
+  editCategories(index, newCat) {
+    let oldCat = this.categories[index];
+    this.categories.value[index] = newCat; 
+  }
+
+  deleteCategories(index) {
+    this.categories.removeAt(index);
   }
 
   updateGroup() {
@@ -78,5 +107,11 @@ export class StandardsComponent implements OnInit {
 
   setActive(id) {
     this.standardsService.activeGroupAction.next(id);
+  }
+
+  updateStandard(group) {
+    let standard = this.standardsForm.value;
+    standard.group = group;
+    this.standardsService.createStandard(standard).subscribe();
   }
 }
