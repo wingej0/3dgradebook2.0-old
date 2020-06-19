@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { StandardsService } from 'src/app/core/services/standards/standards.service';
 import { StandardsGroup } from 'src/app/core/models/standards-group';
 import { FormBuilder, Validators, FormControl, FormArray } from '@angular/forms';
-import { error } from 'console';
 import { Standard } from 'src/app/core/models/standard';
 
 @Component({
@@ -16,6 +15,7 @@ export class StandardsComponent implements OnInit {
   groupForm;
   standardsFormTitle;
   standardsForm;
+  filterText : string;
 
   constructor(
     private standardsService : StandardsService,
@@ -45,13 +45,24 @@ export class StandardsComponent implements OnInit {
   }
 
   setStandardsForm(standard? : Standard) {
-    this.standardsFormTitle = "Add a Standard";
-    this.standardsForm = this.fb.group({
-      category : ['', Validators.required],
-      name : ['', Validators.required],
-      description : ['', Validators.required],
-      essential : [false]
-    })
+    if (standard) {
+      this.standardsFormTitle = "Edit " + standard.name;
+      this.standardsForm = this.fb.group({
+        id : [standard.id],
+        category : [standard.category, Validators.required],
+        name : [standard.name, Validators.required],
+        description : [standard.description, Validators.required],
+        essential : [standard.essential]
+      })
+    } else {
+      this.standardsFormTitle = "Add a Standard";
+      this.standardsForm = this.fb.group({
+        category : ['', Validators.required],
+        name : ['', Validators.required],
+        description : ['', Validators.required],
+        essential : [false]
+      })
+    }
   }
 
   get categories() {
@@ -91,12 +102,19 @@ export class StandardsComponent implements OnInit {
     }
   }
 
-  deleteGroup(group) {
+  deleteGroup(group, standards?) {
     let result = confirm("Are you sure you want to delete '" + group.name + "'?");
     if (result) {
+      this.standardsService.activeGroupAction.next(null);
+      if (standards) {
+        for (let sObj of standards) {
+          for (let standard of sObj.standards) {
+            this.standardsService.deleteStandard(standard).subscribe();
+          }
+        }
+      }
       return this.standardsService.deleteStandardsGroup(group)
         .subscribe(() => {
-          this.standardsService.activeGroupAction.next('');
           return;
         },
         error => {
@@ -109,9 +127,36 @@ export class StandardsComponent implements OnInit {
     this.standardsService.activeGroupAction.next(id);
   }
 
+  toggleEssential(standard) {
+    let id = standard.id;
+    let essential = standard.essential;
+    return this.standardsService.updateStandard({essential : essential}, id)
+        .subscribe();
+  }
+
   updateStandard(group) {
     let standard = this.standardsForm.value;
-    standard.group = group;
-    this.standardsService.createStandard(standard).subscribe();
+    if (standard.id) {
+      let id = standard.id;
+      delete standard.id;
+      return this.standardsService.updateStandard(standard, id)
+        .subscribe();
+    } else {
+      standard.group = group;
+      this.standardsService.createStandard(standard).subscribe();
+    }
+  }
+
+  deleteStandard(standard) {
+    let result = confirm("Are you sure you want to delete '" + standard.name + "'?");
+    if (result) {
+      return this.standardsService.deleteStandard(standard)
+        .subscribe(() => {
+          return;
+        },
+        error => {
+          alert(error.message);
+        })
+    }
   }
 }

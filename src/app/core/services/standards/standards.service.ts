@@ -6,6 +6,7 @@ import { StandardsGroup } from '../../models/standards-group';
 import { concatMap, map } from 'rxjs/operators';
 import { convertSnaps } from '../db-utils';
 import { Standard } from '../../models/standard';
+import { stringify } from 'querystring';
 
 @Injectable({
   providedIn: 'root'
@@ -40,9 +41,29 @@ export class StandardsService {
     this.standards$]
   ).pipe(map(([groups, activeID, standards]) => {
     let active;
-    activeID ? active = groups.find(g => g.id == activeID) : null;
-    activeID ? standards = standards.filter(s => s.group == activeID) : standards = null;
-    return ({groups, active, standards})
+    let displayedStandards = [];
+    if (activeID) {
+      active = groups.find(g => g.id == activeID);
+      standards = standards.filter(s => s.group == activeID);
+      for (let c of active.categories) {
+        let catObj = {
+          category : "",
+          standards : [],
+        }
+        catObj.category = c;
+        catObj.standards = standards.filter(s => s.category == c);
+        displayedStandards.push(catObj);
+      };
+      let uncategorized = {
+        category : "Uncategorized",
+        standards : standards.filter(s => !active.categories.includes(s.category)),
+      };
+      displayedStandards.push(uncategorized);
+    } else {
+      active = null;
+      standards = null;
+    }
+    return ({groups, active, displayedStandards})
   }));
 
   constructor(
@@ -79,6 +100,22 @@ export class StandardsService {
       .pipe(concatMap(user => {
         let standardsRef = this.db.list(`${user.uid}/standards`);
         return from(standardsRef.push(standard));
+      }));
+  }
+
+  updateStandard(standard: Partial<Standard>, id: string) : Observable<any> {
+    return this.auth.user$
+      .pipe(concatMap(user => {
+        let standardRef = this.db.object(`${user.uid}/standards/${id}`);
+        return from(standardRef.update(standard));
+      }));
+  }
+
+  deleteStandard(standard: Standard) : Observable<any> {
+    return this.auth.user$
+      .pipe(concatMap(user => {
+        let standardsRef = this.db.object(`${user.uid}/standards/${standard.id}`);
+        return from(standardsRef.remove());
       }));
   }
 }
