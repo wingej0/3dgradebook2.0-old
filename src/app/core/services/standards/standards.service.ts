@@ -45,20 +45,22 @@ export class StandardsService {
     if (activeID) {
       active = groups.find(g => g.id == activeID);
       standards = standards.filter(s => s.group == activeID);
-      for (let c of active.categories) {
-        let catObj = {
-          category : "",
-          standards : [],
-        }
-        catObj.category = c;
-        catObj.standards = standards.filter(s => s.category == c);
-        displayedStandards.push(catObj);
-      };
-      let uncategorized = {
-        category : "Uncategorized",
-        standards : standards.filter(s => !active.categories.includes(s.category)),
-      };
-      displayedStandards.push(uncategorized);
+      if (active.categories) {
+        for (let c of active.categories) {
+          let catObj = {
+            category : "",
+            standards : [],
+          }
+          catObj.category = c;
+          catObj.standards = standards.filter(s => s.category == c);
+          displayedStandards.push(catObj);
+        };
+        let uncategorized = {
+          category : "Uncategorized",
+          standards : standards.filter(s => !active.categories.includes(s.category)),
+        };
+        displayedStandards.push(uncategorized);
+      }
     } else {
       active = null;
       standards = null;
