@@ -5,6 +5,7 @@ import { DashboardComponent } from './modules/dashboard/dashboard/dashboard.comp
 import { CoursesComponent } from './modules/courses/courses/courses.component';
 import { CanvasCoursesComponent } from './modules/courses/canvas-courses/canvas-courses.component';
 import { StandardsComponent } from './modules/standards/standards/standards.component';
+import { CanvasStandardsComponent } from './modules/standards/canvas-standards/canvas-standards.component';
 
 
 const routes: Routes = [
@@ -12,7 +13,8 @@ const routes: Routes = [
   { path : "dashboard", component : DashboardComponent },
   { path : "courses", component : CoursesComponent },
   { path : "canvas-courses", component : CanvasCoursesComponent },
-  { path : "standards", component : StandardsComponent }
+  { path : "standards", component : StandardsComponent },
+  { path : "canvas-standards", component : CanvasStandardsComponent }
 ];
 
 @NgModule({

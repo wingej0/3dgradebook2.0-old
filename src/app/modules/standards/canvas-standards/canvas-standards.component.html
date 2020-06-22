@@ -1,0 +1,55 @@
+<app-header></app-header>
+
+<main>
+    <div class="row">
+        <div class="col-6">
+            <h1>Import Standards from Canvas</h1>
+        </div>
+        <div class="col-6 text-right">
+            <button type="button" class="btn btn-outline-warning add-button">
+                <i class="fas fa-file-import"></i> Import All
+            </button>
+        </div>
+    </div>
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead>
+                <tr class="table-active">
+                    <td colspan="100%">
+                        <!-- Inline style to stop the scrollbar on larger screens. -->
+                        <div class="row" style="margin: auto; min-width: 1024px;">
+                            <div class="col-4 mr-0 pr-0">
+                                <select name="active_course" class="form-control form-control-sm" id="id_active_course" (change)="setActiveCourse($event.target.value)">
+                                    <option selected [value]="undefined">Select a Course</option>
+                                    <option *ngFor="let course of courses$ | async" [value]="course.courseID">
+                                        {{ course.name }}
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                <!-- Sortable headers -->
+                <tr>
+                    <th style="width: 15%;"><a class="btn">Category</a></th>
+                    <th style="width: 15%;"><a class="btn">Name</a></th>
+                    <th style="width: 55%;"><a class="btn">Description</a></th>
+                    <th style="width: 15%;"><a class="btn">Actions</a></th>
+                </tr>
+            </thead>
+            <tbody *ngIf="displayedOutcomes$ | async as outcomes; else noStandards">
+                <tr *ngFor="let standard of outcomes">
+                    <td>{{ standard.category }}</td>
+                    <td>{{ standard.name }}</td>
+                    <td>{{ standard.description }}</td>
+                    <td><a type="button" class="btn text-danger action-button" (click)="removeStandard(standard)">
+                        <i class="fas fa-minus-circle" data-toggle="tooltip" title="Remove {{ standard.name }} from import list"></i>
+                    </a></td>
+                </tr>
+            </tbody>
+            <ng-template #noStandards>No standards to import.</ng-template>
+        </table>
+    </div>
+</main>
+
+<app-footer></app-footer>
