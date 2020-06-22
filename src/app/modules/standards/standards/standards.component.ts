@@ -33,13 +33,13 @@ export class StandardsComponent implements OnInit {
       this.groupForm = this.fb.group({
         id : [group.id, Validators.required],
         name : [group.name, Validators.required],
-        categories : this.fb.array(group.categories),
+        categories : this.fb.array(group.categories, Validators.required),
       })
     } else {
       this.groupFormTitle = "Add a Standards Group";
       this.groupForm = this.fb.group({
         name : ['', Validators.required],
-        categories : this.fb.array([]),
+        categories : this.fb.array([], [Validators.required]),
       })
     }
   }

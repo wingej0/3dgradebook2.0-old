@@ -14,7 +14,7 @@ import { SharedModule } from 'src/app/shared/shared.module';
     FormsModule,
     ReactiveFormsModule,
     PageLayoutModule,
-    SharedModule
+    SharedModule,
   ]
 })
 export class StandardsModule { }

@@ -10,7 +10,7 @@
             <button type="button" class="btn btn-outline-primary add-button" data-toggle="modal" data-target="#standardsFormModal" (click)="setStandardsForm()">
                 <i class="fas fa-plus-circle"></i> Add
             </button>
-            <a href="/canvas-courses" type="button" class="btn btn-outline-warning add-button">
+            <a href="/canvas-standards" type="button" class="btn btn-outline-warning add-button">
                 <i class="fas fa-file-import"></i> Import
             </a>
         </div>
@@ -35,7 +35,7 @@
                                 <a *ngIf="standards.active" class="btn text-warning select-btn" data-toggle="modal" data-target="#standardsGroupFormModal" (click)="setStandardsGroupForm(standards.active)"><i class="fas fa-edit" data-toggle="tooltip" title="Edit {{ standards.active.name }}"></i></a>&nbsp;
                                 <a *ngIf="standards.active" class="btn text-danger select-btn" (click)="deleteGroup(standards.active, standards.displayedStandards)"><i class="fas fa-trash-alt" data-toggle="tooltip" title="Delete {{ standards.active.name }}"></i></a>
                             </div>
-                            <div class="col-3 offset-3 text-right">
+                            <div class="col-4 offset-2 text-right">
                                 <input type="text" class="form-control form-control-sm" placeholder="Search Standards" [(ngModel)]="filterText">
                             </div>
                         </div>
