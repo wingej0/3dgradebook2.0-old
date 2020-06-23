@@ -3,7 +3,7 @@ import { AuthService } from '../auth/auth.service';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { StandardsService } from '../standards/standards.service';
 import { concatMap, map } from 'rxjs/operators';
-import { BehaviorSubject, of, combineLatest, Observable } from 'rxjs';
+import { Observable } from 'rxjs';
 import { CanvasStandard } from '../../models/canvas-standard';
 
 @Injectable({
@@ -15,7 +15,6 @@ export class CanvasStandardsService {
   constructor(
     private auth : AuthService,
     private http : HttpClient,
-    private standardsService : StandardsService
   ) { }
 
   getOutcomeGroups(id : string) : Observable<any> {
