@@ -105,7 +105,7 @@ export class StandardsComponent implements OnInit {
   deleteGroup(group, standards?) {
     let result = confirm("Are you sure you want to delete '" + group.name + "'?");
     if (result) {
-      this.standardsService.activeGroupAction.next(null);
+      this.standardsService.activeGroupAction.next("undefined");
       if (standards) {
         for (let sObj of standards) {
           for (let standard of sObj.standards) {

@@ -6,7 +6,6 @@ import { StandardsGroup } from '../../models/standards-group';
 import { concatMap, map } from 'rxjs/operators';
 import { convertSnaps } from '../db-utils';
 import { Standard } from '../../models/standard';
-import { stringify } from 'querystring';
 
 @Injectable({
   providedIn: 'root'
@@ -32,17 +31,18 @@ export class StandardsService {
         );
     }));
 
-  public activeGroupAction = new BehaviorSubject<string>("");
+  public activeGroupAction = new BehaviorSubject<string>("undefined");
   private activeGroupAction$ = this.activeGroupAction.asObservable();
 
   displayedStandardsGroups$ = combineLatest(
     [this.standardsGroups$,
     this.activeGroupAction$,
-    this.standards$]
-  ).pipe(map(([groups, activeID, standards]) => {
+    this.standards$,
+    this.auth.user$]
+  ).pipe(map(([groups, activeID, standards, user]) => {
     let active;
     let displayedStandards = [];
-    if (activeID) {
+    if (activeID !== "undefined") {
       active = groups.find(g => g.id == activeID);
       standards = standards.filter(s => s.group == activeID);
       if (active.categories) {
@@ -63,9 +63,9 @@ export class StandardsService {
       }
     } else {
       active = null;
-      standards = null;
+      standards = [];
     }
-    return ({groups, active, displayedStandards})
+    return ({groups, active, displayedStandards, user})
   }));
 
   constructor(

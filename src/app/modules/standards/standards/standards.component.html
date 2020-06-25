@@ -6,11 +6,11 @@
         <div class="col-6">
             <h1>Standards</h1>
         </div>
-        <div *ngIf="standards.active" class="col-6 text-right">
-            <button type="button" class="btn btn-outline-primary add-button" data-toggle="modal" data-target="#standardsFormModal" (click)="setStandardsForm()">
+        <div class="col-6 text-right">
+            <button *ngIf="standards.active" type="button" class="btn btn-outline-primary add-button" data-toggle="modal" data-target="#standardsFormModal" (click)="setStandardsForm()">
                 <i class="fas fa-plus-circle"></i> Add
             </button>
-            <a href="/canvas-standards" type="button" class="btn btn-outline-warning add-button">
+            <a *ngIf="standards.user.import" href="/canvas-standards" type="button" class="btn btn-outline-warning add-button">
                 <i class="fas fa-file-import"></i> Import
             </a>
         </div>

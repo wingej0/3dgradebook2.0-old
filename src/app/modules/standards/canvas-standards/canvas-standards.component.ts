@@ -70,7 +70,12 @@ export class CanvasStandardsComponent implements OnInit {
             this.outcomes.next(standards.sort(this.sortStandards));
           });
         }
-      })).subscribe()
+      })).subscribe(() => {
+        return;
+      },
+      error => {
+        alert(error.message);
+      })
   }
 
   removeStandard(standard) {
@@ -114,6 +119,12 @@ export class CanvasStandardsComponent implements OnInit {
         this.coursesService.updateCourse({ standardsID : groupID }, course.id).subscribe();
       };
       return ({groupID, courses});
-    })).subscribe()
+    })).subscribe(() => {
+      return;
+    },
+    error => {
+      alert(error.message);
+    })
+    alert("The standards were imported successfully.");
   }
 }
