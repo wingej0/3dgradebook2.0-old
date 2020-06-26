@@ -6,6 +6,7 @@ import { PageLayoutModule } from './page-layout/page-layout.module';
 import { CoursesModule } from './courses/courses.module';
 import { SharedModule } from '../shared/shared.module';
 import { StandardsModule } from './standards/standards.module';
+import { StudentsModule } from './students/students.module';
 
 
 
@@ -18,6 +19,7 @@ import { StandardsModule } from './standards/standards.module';
     DashboardModule,
     CoursesModule,
     StandardsModule,
+    StudentsModule,
     SharedModule
   ]
 })
