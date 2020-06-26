@@ -6,5 +6,5 @@ export interface Student {
     passcode: string,
     parentName: string,
     parentEmail: string,
-    courses: string[],
+    course: string,
 }

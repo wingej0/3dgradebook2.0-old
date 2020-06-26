@@ -38,7 +38,7 @@ export class CoursesService {
         c => (
           {...c,
             standards : standards.find(s => s.id == c.standardsID) ? standards.find(s => s.id == c.standardsID).name : "",
-            numberOfStudents : students.filter(st => st.courses.includes(c.id)).length,
+            numberOfStudents : students.filter(st => st.course == c.id).length,
           }
         ) as Course
       )

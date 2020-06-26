@@ -1,1 +1,62 @@
-<p>students works!</p>
+<app-header></app-header>
+
+<main *ngIf="cData$ | async as cData">
+    <!-- Standard page header - Title on left/add and import buttons on right -->
+    <div class="row">
+        <div class="col-6">
+            <h1>Students</h1>
+        </div>
+        <div class="col-6 text-right">
+            <button type="button" class="btn btn-outline-primary add-button" data-toggle="modal" data-target="#studentFormModal" (click)="setStudentForm()">
+                <i class="fas fa-plus-circle"></i> Add
+            </button>
+            <a href="/canvas-students" type="button" class="btn btn-outline-warning add-button">
+                <i class="fas fa-file-import"></i> Import
+            </a>
+        </div>
+    </div>
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead>
+                <tr class="table-active">
+                    <td colspan="100%">
+                        <!-- Inline style to stop the scrollbar on larger screens. -->
+                        <div class="row" style="margin: auto; min-width: 1024px;">
+                            <div class="col-4 mr-0 pr-0">
+                                <select name="courses" class="form-control form-control-sm" id="id_courses" (change)=setActive($event.target.value)>
+                                    <option selected [value]="undefined">Select a Course</option>
+                                    <option *ngFor="let course of cData.courses" [value]="course.id">
+                                        {{ course.name }} | {{ course.section }}
+                                    </option>
+                                </select>
+                            </div>
+                            <div class="col-4 offset-4 text-right">
+                                <input type="text" class="form-control form-control-sm" placeholder="Search Students" [(ngModel)]="filterText">
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <th style="width: 20%;">Name</th>
+                    <th style="width: 15%;">Email</th>
+                    <th style="width: 15%;">Passcode</th>
+                    <th style="width: 20%;">Parent / Guardian</th>
+                    <th style="width: 15%;">Parent Email</th>
+                    <th style="width: 15%;">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let student of cData.students">
+                    <td>{{ student.lastName }}, {{ student.firstName }}</td>
+                    <td>{{ student.email }}</td>
+                    <td>{{ student.passcode }}</td>
+                    <td>{{ student.parentName }}</td>
+                    <td>{{ student.parentEmail }}</td>
+                    <td>Actions</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</main>
+
+<app-footer></app-footer>
