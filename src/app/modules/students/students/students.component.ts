@@ -14,6 +14,7 @@ import { CoursesService } from 'src/app/core/services/courses/courses.service';
 export class StudentsComponent implements OnInit {
   students$ : Observable<Student[]> = this.studentsService.displayedStudents$;
   courses$ : Observable<Course[]> = this.coursesService.displayedCourses$;
+  filterText : string;
 
   cData$ = combineLatest([
     this.students$,

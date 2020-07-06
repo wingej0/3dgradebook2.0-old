@@ -2,6 +2,8 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { StudentsComponent } from './students/students.component';
 import { PageLayoutModule } from '../page-layout/page-layout.module';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { SharedModule } from 'src/app/shared/shared.module';
 
 
 
@@ -9,7 +11,10 @@ import { PageLayoutModule } from '../page-layout/page-layout.module';
   declarations: [StudentsComponent],
   imports: [
     CommonModule,
-    PageLayoutModule
+    PageLayoutModule,
+    FormsModule,
+    ReactiveFormsModule,
+    SharedModule
   ]
 })
 export class StudentsModule { }
