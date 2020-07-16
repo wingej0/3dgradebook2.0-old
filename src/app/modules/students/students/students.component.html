@@ -7,10 +7,10 @@
             <h1>Students</h1>
         </div>
         <div class="col-6 text-right">
-            <button type="button" class="btn btn-outline-primary add-button" data-toggle="modal" data-target="#studentFormModal" (click)="setStudentForm()">
+            <button *ngIf="cData.students.course" type="button" class="btn btn-outline-primary add-button" data-toggle="modal" data-target="#studentFormModal" (click)="setStudentForm()">
                 <i class="fas fa-plus-circle"></i> Add
             </button>
-            <a href="/canvas-students" type="button" class="btn btn-outline-warning add-button">
+            <a *ngIf="cData.user.import" href="/canvas-students" type="button" class="btn btn-outline-warning add-button">
                 <i class="fas fa-file-import"></i> Import
             </a>
         </div>
@@ -25,7 +25,7 @@
                             <div class="col-4 mr-0 pr-0">
                                 <select name="courses" class="form-control form-control-sm" id="id_courses" (change)=setActive($event.target.value)>
                                     <option selected [value]="undefined">Select a Course</option>
-                                    <option *ngFor="let course of cData.courses" [value]="course.id">
+                                    <option *ngFor="let course of cData.courses" [value]="course.id" [selected]="(cData.students.course) ? course.id == cData.students.course : undefined">
                                         {{ course.name }} | {{ course.section }}
                                     </option>
                                 </select>
@@ -46,16 +46,60 @@
                 </tr>
             </thead>
             <tbody>
-                <tr *ngFor="let student of cData.students">
+                <tr *ngFor="let student of cData.students.students | itemFilter:filterText">
                     <td>{{ student.lastName }}, {{ student.firstName }}</td>
                     <td>{{ student.email }}</td>
                     <td>{{ student.passcode }}</td>
                     <td>{{ student.parentName }}</td>
                     <td>{{ student.parentEmail }}</td>
-                    <td>Actions</td>
+                    <td>
+                        <a class="btn text-info action-button" data-toggle="modal" data-target="#studentFormModal" (click)="setStudentForm(student)"><i class="fas fa-edit" data-toggle="tooltip" title="Edit {{ student.lastName }}, {{ student.firstName }}"></i></a>
+                        <a class="btn text-danger action-button" (click)="deleteStudent(student)"><i class="fas fa-trash-alt" data-toggle="tooltip" title="Delete {{ student.lastName }}, {{ student.firstName }}"></i></a>
+                    </td>
                 </tr>
             </tbody>
         </table>
+    </div>
+    <!-- Student Form Modal -->
+    <div class="modal fade" id="studentFormModal" tabindex="-1" role="dialog" aria-labelledby="studentFormModal" aria-hidden="true">
+        <form [formGroup]="studentForm">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3 class="modal-title" id="studentForm">{{ studentFormTitle }}</h3>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                          <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label for="id_first_name">First Name:</label>
+                            <input type="text" name="first_name" id="id_first_name"  class="form-control" formControlName="firstName" required />
+                        </div>
+                        <div class="form-group">
+                            <label for="id_last_name">Last Name:</label>
+                            <input type="text" name="last_name" id="id_last_name"  class="form-control" formControlName="lastName" required />
+                        </div>
+                        <div class="form-group">
+                            <label for="id_email">Email:</label>
+                            <input type="text" name="email" id="id_email"  class="form-control" formControlName="email" required />
+                        </div>
+                        <div class="form-group">
+                            <label for="id_parent_name">Parent Name:</label>
+                            <input type="text" name="parent_name" id="id_parent_name"  class="form-control" formControlName="parentName" />
+                        </div>
+                        <div class="form-group">
+                            <label for="id_parent_email">Parent Email:</label>
+                            <input type="text" name="parent_email" id="id_parent_email"  class="form-control" formControlName="parentEmail" />
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary" data-dismiss="modal" (click)="updateStudent(cData.students.course)" [disabled]="!studentForm.valid">Save Changes</button>
+                    </div>
+                </div>
+            </div>
+        </form>
     </div>
 </main>
 

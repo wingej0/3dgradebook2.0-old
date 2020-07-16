@@ -4,7 +4,7 @@ export interface Student {
     lastName: string,
     email: string,
     passcode: string,
-    parentName: string,
-    parentEmail: string,
+    parentName?: string,
+    parentEmail?: string,
     course: string,
 }
