@@ -6,14 +6,14 @@ export const environment = {
   production: false,
   // Add your own firebase credentials here
   firebase: {
-    apiKey: "AIzaSyB8y-D2h6QAS6EcuvhgzI9PkfUrL0QnTjU",
-    authDomain: "sbgradebook-b9551.firebaseapp.com",
-    databaseURL: "https://sbgradebook-b9551.firebaseio.com",
-    projectId: "sbgradebook-b9551",
-    storageBucket: "sbgradebook-b9551.appspot.com",
-    messagingSenderId: "179271736820",
-    appId: "1:179271736820:web:ba6ad98b8914a6dded2da1",
-    measurementId: "G-XR5SLZR6YS"
+    apiKey: "AIzaSyAyUU2X2O2ddeoM6YmjS5kco9hcmUw9lXk",
+    authDomain: "gb-dev-74bd7.firebaseapp.com",
+    databaseURL: "https://gb-dev-74bd7-default-rtdb.firebaseio.com",
+    projectId: "gb-dev-74bd7",
+    storageBucket: "gb-dev-74bd7.appspot.com",
+    messagingSenderId: "38127944473",
+    appId: "1:38127944473:web:3e702a1b9c93891f29bb88",
+    measurementId: "G-551MX5DQTZ"
   }
 };
 
